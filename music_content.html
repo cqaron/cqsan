@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>音乐殿堂</title>
+
+<link rel="preload" href="css/all.min.css" as="style" />
+<link rel="preload" href="css/style.css" as="style" />
+<link rel="preload" href="images/playlist_chill_thumb.jpg" as="image" />
+
+<link href="css/all.min.css" rel="stylesheet" type="text/css" />
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body class="content-page">
+    <div class="content-page-wrapper">
+        <h2>
+            我的音乐殿堂
+            <a href="#" id="pageActionBtn" class="page-title-action-button" title="返回网站首页">
+                <i class="fas fa-home"></i>
+                <span>返回主页</span>
+            </a>
+        </h2>
+        <div class="card">
+            <p>音乐是我的灵魂伴侣，它陪伴我度过了无数时光。这里有我珍藏的旋律，希望也能触动你。</p>
+            <p>“没有音乐，生活将是一种错误。” —— 尼采</p>
+        </div>
+        <div class="cards-container">
+            <div class="card">
+                <h3>推荐歌单</h3>
+                <p>一些我个人非常喜欢的歌单，涵盖不同风格和心情：</p>
+                <ul class="card-internal-list">
+                    <li class="card-list-item">
+                        <img src="images/playlist_chill_thumb.jpg" alt="纯音乐歌单缩略图" class="card-list-item-image"/>
+                        <div class="card-list-item-content">
+                             <a href="music_playlist1.html">静心纯音乐</a>
+                             <span> - 适合阅读、工作或冥想时聆听。</span>
+                        </div>
+                    </li>
+                    <li class="card-list-item">
+                        <img src="images/playlist_rock_thumb.jpg" alt="摇滚歌单缩略图" class="card-list-item-image"/>
+                        <div class="card-list-item-content">
+                            <a href="music_playlist2.html">经典摇滚精选</a>
+                            <span> - 那些点燃热血，永不褪色的旋律。</span>
+                        </div>
+                    </li>
+                    <li class="card-list-item">
+                        <img src="images/playlist_electronic_thumb.jpg" alt="电子乐歌单缩略图" class="card-list-item-image"/>
+                        <div class="card-list-item-content">
+                            <a href="music_playlist3.html">迷幻电子之旅</a>
+                            <span> - 沉浸在富有节奏感和未来感的音景中。</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>音乐感悟</h3>
+                <p>对我而言，音乐不仅仅是声音的艺术，它更是一种情感的载体，一种思想的表达。不同的音乐类型能带给我不同的心境和启发。</p>
+                <ul>
+                    <li><strong>古典音乐：</strong>它的结构、深度和历史感常常让我惊叹，从中能感受到人类智慧的璀璨。</li>
+                    <li><strong>摇滚乐：</strong>它的直率、力量和反叛精神，是年轻心灵的呐喊和共鸣。</li>
+                    <li><strong>电子音乐：</strong>它的创新、实验性和科技感，带我探索声音的无限可能。</li>
+                    <li><strong>民谣：</strong>它的质朴、真诚和叙事性，如同老朋友在耳边轻声诉说。</li>
+                </ul>
+                <p>每一种音乐都有其独特的魅力，等待我们去发现和感受。</p>
+                <p><img src="images/music_notes_visual.jpg" alt="音乐相关的抽象图片" class="card-image" /></p>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            var pageActionBtn = document.getElementById('pageActionBtn');
+            if (pageActionBtn) {
+                pageActionBtn.onclick = function(event) {
+                    event.preventDefault();
+                    // 恢复原始的、在 file:/// 下有效的导航方式：导航当前 iframe
+                    window.location.href = 'home_content.html';
+                };
+            }
+        });
+    </script>
+</body>
+</html>

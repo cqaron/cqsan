@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>光影世界</title>
+
+<link rel="preload" href="css/all.min.css" as="style" />
+<link rel="preload" href="css/style.css" as="style" />
+
+<link rel="preload" href="images/movie_interstellar_thumb.jpg" as="image" />
+
+<link href="css/all.min.css" rel="stylesheet" type="text/css" />
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body class="content-page">
+    <div class="content-page-wrapper">
+        <h2>
+            我的光影足迹
+            <a href="#" id="pageActionBtn" class="page-title-action-button" title="返回网站首页">
+                <i class="fas fa-home"></i>
+                <span>返回主页</span>
+            </a>
+        </h2>
+        <div class="card"> <p>此刻，放映机的光束再度穿透黑暗</p>
+            <p>让我们潜入蔡明亮永远滴漏的水渍时钟</p>
+            <p>在阿彼察邦的热带梦境里拾取虎牙形状的月光</p>
+            <p>大卫·林奇的红房间地毯正在滋生超现实的菌丝</p>
+            <p>而安哲罗普洛斯的雾中风景深处，有人始终在等待那列驶向童年的绿皮火车。</p>
+            <p>此刻，请收下这张褶皱的光影车票：</p>
+            <p>它可能沾染着娄烨镜头里苏州河的烟水气</p>
+            <p>或是夹着塔可夫斯基的飞向太空的诗页</p>
+            <p>当银幕如水面泛起细密的颤纹，愿我们都能在光与暗的褶皱里，打捞起那些被时间赦免的、琥珀色的凝视。</p>
+        </div>
+        <div class="cards-container">
+            <div class="card">
+                <h3>近期观看</h3>
+                <p>最近观看并留下深刻印象的电影：</p>
+                <ul class="card-internal-list">
+                    <li class="card-list-item">
+                        <img src="images/movie_interstellar_thumb.jpg" alt="星际穿越 缩略图" class="card-list-item-image"/>
+                        <div class="card-list-item-content">
+                            <a href="movie_review1.html">《星际穿越》</a>
+                            <span> - 探索宇宙奥秘与人类情感的科幻巨制。</span>
+                        </div>
+                    </li>
+                    <li class="card-list-item">
+                        <img src="images/movie_forrest_gump_thumb.jpg" alt="阿甘正传 缩略图" class="card-list-item-image"/>
+                        <div class="card-list-item-content">
+                            <a href="movie_review2.html">《阿甘正传》</a>
+                            <span> - 用奔跑诠释人生，一部充满温情与力量的经典。</span>
+                        </div>
+                    </li>
+                    <li class="card-list-item">
+                        <img src="images/movie_spirited_away_thumb.jpg" alt="千与千寻 缩略图" class="card-list-item-image"/>
+                        <div class="card-list-item-content">
+                           <a href="movie_review3.html">《千与千寻》</a>
+                           <span> - 宫崎骏的奇幻世界，关于成长与寻找自我的动画。</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>推荐电影</h3>
+                <p>一些不容错过的佳片：</p>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>电影名称</th>
+                        <th>导演</th>
+                        <th>类型</th>
+                        <th>推荐理由</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>《肖申克的救赎》</td>
+                        <td>弗兰克·德拉邦特</td>
+                        <td>剧情、犯罪</td>
+                        <td>关于希望、自由与友谊的不朽之作。</td>
+                    </tr>
+                    <tr>
+                        <td>《盗梦空间》</td>
+                        <td>克里斯托弗·诺兰</td>
+                        <td>科幻、悬疑、动作</td>
+                        <td>层层深入的梦境，挑战你的想象力。</td>
+                    </tr>
+                    <tr>
+                        <td>《机器人总动员》</td>
+                        <td>安德鲁·斯坦顿</td>
+                        <td>动画、科幻、爱情</td>
+                        <td>一部温馨感人的环保主题动画。</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p>电影不仅是娱乐，更是思考。希望这些电影也能给你带来启发和感动。</p>
+                <p><img src="images/movies_visual.jpg" alt="电影相关图片" class="card-image" /></p>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            var pageActionBtn = document.getElementById('pageActionBtn');
+            if (pageActionBtn) {
+                pageActionBtn.onclick = function(event) {
+                    event.preventDefault();
+                    // Navigate the current iframe to home_content.html
+                    window.location.href = 'home_content.html';
+                };
+            }
+        });
+    </script>
+</body>
+</html>

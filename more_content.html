@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>更多精彩</title>
+
+<link rel="preload" href="css/all.min.css" as="style" />
+<link rel="preload" href="css/style.css" as="style" />
+
+<link rel="preload" href="images/hobby_photography_thumb.jpg" as="image" />
+
+<link href="css/all.min.css" rel="stylesheet" type="text/css" />
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body class="content-page">
+    <div class="content-page-wrapper">
+        <h2>
+            更多精彩瞬间与思考
+            <a href="#" id="pageActionBtn" class="page-title-action-button" title="返回网站首页">
+                <i class="fas fa-home"></i>
+                <span>返回主页</span>
+            </a>
+        </h2>
+        <div class="card">
+            <p>生活不止眼前的苟且，还有诗和远方。这里记录着我的一些业余爱好、旅行见闻以及不成熟的思考，希望能与你分享这份多元的体验。</p>
+        </div>
+        <div class="cards-container">
+            <div class="card">
+                <h3>我的爱好</h3>
+                <p>在工作学习之余，我喜欢通过不同的方式来放松和充实自己：</p>
+                <ul class="card-internal-list">
+                    <li class="card-list-item">
+                        <img src="images/hobby_photography_thumb.jpg" alt="摄影缩略图" class="card-list-item-image"/>
+                        <div class="card-list-item-content">
+                            <a href="more_hobby_photography.html">摄影瞬间</a>
+                            <span> - 用镜头捕捉生活中的光影与情感。</span>
+                        </div>
+                    </li>
+                    <li class="card-list-item">
+                        <img src="images/hobby_coding_thumb.jpg" alt="代码缩略图" class="card-list-item-image"/>
+                        <div class="card-list-item-content">
+                            <a href="more_hobby_coding.html">代码探索</a>
+                            <span> - 在逻辑与创造中寻找编程的乐趣。</span>
+                        </div>
+                    </li>
+                    <li class="card-list-item">
+                        <img src="images/hobby_travel_thumb.jpg" alt="旅行缩略图" class="card-list-item-image"/>
+                        <div class="card-list-item-content">
+                            <a href="more_hobby_travel.html">旅行足迹</a>
+                            <span> - 世界那么大，我想去看看。</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>随想杂谈</h3>
+                <p>一些零散的思考、感悟，或是有趣的小故事，不定期更新。</p>
+                 <ul class="card-internal-list">
+                    <li class="card-list-item">
+                        <img src="images/thoughts_time_thumb.jpg" alt="思考缩略图" class="card-list-item-image"/>
+                        <div class="card-list-item-content">
+                             <a href="more_thoughts1.html">关于时间的思考</a>
+                             <span> - 对时间流逝与个人成长的浅薄感悟。</span>
+                        </div>
+                    </li>
+                    </ul>
+                <p style="margin-top: 20px;">“我思故我在。” —— 勒内·笛卡尔</p>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            var pageActionBtn = document.getElementById('pageActionBtn');
+            if (pageActionBtn) {
+                pageActionBtn.onclick = function(event) {
+                    event.preventDefault();
+                    // Navigate the current iframe to home_content.html
+                    window.location.href = 'home_content.html';
+                };
+            }
+        });
+    </script>
+</body>
+</html>

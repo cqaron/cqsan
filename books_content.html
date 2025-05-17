@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>书香世界</title>
+
+<link rel="preload" href="css/all.min.css" as="style" />
+<link rel="preload" href="css/style.css" as="style" />
+
+<link rel="preload" href="images/book_santi_thumb.jpg" as="image" />
+
+<link href="css/all.min.css" rel="stylesheet" type="text/css" />
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body class="content-page">
+    <div class="content-page-wrapper">
+        <h2>
+            我的书香世界
+            <a href="#" id="pageActionBtn" class="page-title-action-button" title="返回网站首页">
+                <i class="fas fa-home"></i>
+                <span>返回主页</span>
+            </a>
+        </h2>
+        <div class="card">
+            <p>书籍是开启智慧的钥匙，是连接古今的桥梁。在文字的海洋中遨游，总能发现新的大陆。</p>
+            <p>“读一本好书，就是和许多高尚的人谈话。” —— 歌德</p>
+        </div>
+        <div class="cards-container">
+            <div class="card">
+                <h3>近期阅读</h3>
+                <p>最近沉浸其中，并有所感悟的书籍：</p>
+                <ul class="card-internal-list">
+                    <li class="card-list-item">
+                        <img src="images/book_santi_thumb.jpg" alt="三体缩略图" class="card-list-item-image"/>
+                        <div class="card-list-item-content">
+                            <a href="book_review1.html">《三体》系列</a>
+                            <span> - 刘慈欣构建的宏大宇宙与深刻的人性思考。</span>
+                        </div>
+                    </li>
+                    <li class="card-list-item">
+                        <img src="images/book_huozhe_thumb.jpg" alt="活着缩略图" class="card-list-item-image"/>
+                        <div class="card-list-item-content">
+                            <a href="book_review2.html">《活着》</a>
+                            <span> - 余华笔下小人物的苦难与坚韧。</span>
+                        </div>
+                    </li>
+                    <li class="card-list-item">
+                        <img src="images/book_hundred_years_thumb.jpg" alt="百年孤独缩略图" class="card-list-item-image"/>
+                        <div class="card-list-item-content">
+                            <a href="book_review3.html">《百年孤独》</a>
+                            <span> - 马尔克斯的魔幻现实主义巨作，家族的传奇与轮回。</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>阅读随想</h3>
+                <p>阅读对我而言，是一种生活方式，一种与世界对话的途径。它能：</p>
+                <ul>
+                    <li><strong>拓宽视野：</strong> 了解不同的文化、历史和思想。</li>
+                    <li><strong>启迪智慧：</strong> 从前人的经验和思考中获得启发。</li>
+                    <li><strong>慰藉心灵：</strong> 在故事中找到共鸣，在文字中获得力量。</li>
+                    <li><strong>提升自我：</strong> 培养批判性思维和独立思考能力。</li>
+                </ul>
+                <p>每一本书都是一个独特的世界，等待着我们去探索和发现其中的宝藏。</p>
+                <p><img src="images/books_reading_visual.jpg" alt="阅读相关的温馨图片" class="card-image" /></p>
+            </div>
+        </div>
+    </div>
+     <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            var pageActionBtn = document.getElementById('pageActionBtn');
+            if (pageActionBtn) {
+                pageActionBtn.onclick = function(event) {
+                    event.preventDefault();
+                    // Navigate the current iframe to home_content.html
+                    window.location.href = 'home_content.html';
+                };
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>首页内容</title>
+
+<link rel="preload" href="css/all.min.css" as="style" />
+<link rel="preload" href="css/style.css" as="style" />
+<link rel="preload" href="images/banner1.jpg" as="image" />
+<link rel="preload" href="images/profile_pic.png" as="image" />
+<link rel="preload" href="images/design_banner.jpg" as="image" /> 
+
+<link href="css/all.min.css" rel="stylesheet" type="text/css" />
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+    /* --- 个人简介卡片特定样式 (保持不变) --- */
+    .profile-statistics-card {
+        padding: 30px; margin-top: 30px; margin-bottom: 30px;
+        background-color: var(--bg-primary); border: 1px solid var(--border-color-soft);
+        border-radius: 16px; box-shadow: var(--shadow-md);
+        transition: transform var(--transition-speed-normal) var(--transition-easing),
+                    box-shadow var(--transition-speed-normal) var(--transition-easing),
+                    border-color var(--transition-speed-normal) var(--transition-easing);
+        overflow-wrap: break-word; word-wrap: break-word;
+    }
+    .profile-statistics-card:hover {
+        transform: translateY(-6px) scale(1.005);
+        box-shadow: var(--shadow-lg-hover); border-color: var(--accent-primary);
+    }
+    .profile-intro-header { text-align: center; margin-bottom: 30px; }
+    .profile-main-greeting { 
+        font-size: 2em; color: var(--accent-primary); font-weight: 700;
+        font-family: var(--font-primary-stack); margin-bottom: 20px; 
+        padding-bottom: 10px; border-bottom: 1px solid var(--border-color-soft);
+        display: inline-block;
+    }
+    .profile-main-content { display: flex; flex-wrap: wrap; gap: 30px; }
+    .profile-left-column {
+        flex: 1 1 280px; min-width: 260px; display: flex; flex-direction: column;
+        align-items: flex-start; padding-right: 25px; border-right: 1px solid var(--border-color-soft); 
+    }
+    .profile-picture {
+        width: 100%; max-width: 220px; height: auto; border-radius: 12px; 
+        box-shadow: var(--shadow-md); margin-bottom: 20px; object-fit: cover; align-self: center; 
+    }
+    .profile-name { 
+        font-size: 1.6em; font-weight: 700; color: var(--text-primary);
+        margin: 0 0 15px 0; padding: 0; width: 100%; text-align: left; 
+    }
+    .contact-info { width: 100%; text-align: left; }
+    .contact-info p {
+        font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px; 
+        display: flex; align-items: center; justify-content: flex-start; 
+    }
+    .contact-info p i {
+        margin-right: 10px; color: var(--accent-primary);
+        width: 18px; text-align: center; font-size: 1.1em; 
+    }
+    .find-me-title {
+        font-size: 1.2em; color: var(--text-primary); margin-top: 25px;
+        margin-bottom: 12px; font-weight: 600; width: 100%; text-align: left; 
+    }
+    .social-links-list { list-style: none; padding-left: 0; margin: 0; width: 100%; }
+    .social-links-list li { margin-bottom: 10px; }
+    .social-links-list li a {
+        text-decoration: none; color: var(--text-secondary); font-size: 0.95rem; 
+        display: flex; align-items: center; padding: 8px 12px; 
+        border-radius: 20px; background-color: var(--bg-secondary); 
+        transition: background-color var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing);
+    }
+    .social-links-list li a i {
+        margin-right: 10px; font-size: 1.2em; width: 20px; text-align: center;
+        color: var(--accent-primary); transition: color var(--transition-speed-fast) var(--transition-easing);
+    }
+    .social-links-list li a:hover {
+        background-color: var(--accent-primary); color: var(--btn-primary-text) !important; 
+        transform: translateY(-2px);
+    }
+    .social-links-list li a:hover i { color: var(--btn-primary-text) !important; }
+    .profile-right-column {
+        flex: 2 1 450px; min-width: 300px; padding-left: 25px; 
+        display: flex; flex-direction: column; 
+    }
+    .aspirations {
+        font-size: 1.3em; line-height: 1.6; color: var(--text-primary);
+        margin-bottom: 20px; font-weight: 400; 
+    }
+    .highlight-text { font-weight: 700; color: var(--accent-primary); }
+    .interests-description {
+        font-size: 1rem; line-height: 1.75; color: var(--text-secondary); margin-bottom: 30px;
+    }
+    .statistics-title { 
+        font-size: 1.4em; color: var(--text-primary);
+        border-bottom: 1px solid var(--border-color-soft); padding-bottom: 12px;
+        margin-bottom: 25px; font-weight: 600;
+    }
+    .statistics-sections-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+        gap: 20px; flex-grow: 1; 
+    }
+    .statistic-section {
+        background-color: var(--bg-secondary); padding: 20px; border-radius: 12px;
+        border-left: 5px solid var(--accent-primary); 
+        transition: transform 0.2s var(--transition-easing), box-shadow 0.2s var(--transition-easing);
+        display: flex; flex-direction: column; 
+    }
+    .statistic-section:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .statistic-section h4 { 
+        font-size: 1.1em; color: var(--accent-primary); margin-top: 0;
+        margin-bottom: 12px; display: flex; align-items: center;
+    }
+    .statistic-section h4 i { 
+        margin-right: 8px; font-size: 1.2em; color: var(--accent-primary); 
+    }
+    .statistic-section ul {
+        list-style: disc; padding-left: 20px; margin: 0;
+        font-size: 0.85rem; color: var(--text-secondary);
+        line-height: 1.6; flex-grow: 1; 
+    }
+    .statistic-section ul li { margin-bottom: 6px; }
+
+    /* --- 网站设计理念卡片样式 --- */
+    .design-philosophy-card {
+        padding: 0; margin-top: 30px; overflow: hidden; 
+        background-color: var(--bg-primary); border: 1px solid var(--border-color-soft);
+        border-radius: 16px; box-shadow: var(--shadow-md);
+        transition: transform var(--transition-speed-normal) var(--transition-easing),
+                    box-shadow var(--transition-speed-normal) var(--transition-easing),
+                    border-color var(--transition-speed-normal) var(--transition-easing);
+    }
+    .design-philosophy-card:hover {
+        transform: translateY(-6px) scale(1.005);
+        box-shadow: var(--shadow-lg-hover); border-color: var(--accent-primary);
+    }
+    .card-banner-image-container {
+        width: 100%; position: relative; height: 0;
+        padding-bottom: 25%; /* 尝试 4:1 的比例，让图片更扁平 */
+        overflow: hidden;
+        border-top-left-radius: 16px; 
+        border-top-right-radius: 16px; 
+    }
+    .design-philosophy-card .card-banner-image {
+        position: absolute; top: 0; left: 0;
+        width: 100%; height: 100%; 
+        object-fit: cover; display: block;
+    }
+    .design-philosophy-card .card-content-area {
+        padding: 25px 30px; text-align: left; 
+    }
+    .design-philosophy-card .card-content-area h3 { 
+        margin-top: 0; margin-bottom: 18px; color: var(--accent-primary);
+        font-size: 1.4em; border-bottom: 1px solid var(--border-color-soft);
+        padding-bottom: 12px; text-align: left; 
+    }
+     .design-philosophy-card .card-content-area p { 
+        color: var(--text-secondary); line-height: 1.75;
+        margin-top: 0; margin-bottom: 18px; font-size: 1rem;
+        text-align: left; 
+    }
+    .design-philosophy-card .design-points {
+        list-style: none; padding-left: 0; margin-top: 20px; text-align: left; 
+    }
+    .design-philosophy-card .design-points li {
+        display: flex; align-items: flex-start; 
+        margin-bottom: 12px; font-size: 0.95rem; color: var(--text-secondary);
+    }
+    .design-philosophy-card .design-points li i {
+        color: var(--accent-primary); margin-right: 10px; font-size: 1.1em;
+        width: 20px; text-align: center; margin-top: 2px; 
+    }
+    
+    @media (max-width: 768px) {
+        .profile-main-content { gap: 20px; } 
+        .profile-left-column { padding-right: 0; align-items: center; border-right: none;}
+        .profile-name { text-align: center; }
+        .contact-info p { justify-content: center; }
+        .find-me-title { text-align: center; }
+        .social-links-list li a { justify-content: center; }
+        .profile-right-column { padding-left: 0; margin-top: 30px; } 
+        .profile-main-greeting { font-size: 1.7em; }
+        .aspirations { font-size: 1.1em; text-align: center; }
+        .interests-description { text-align: center; font-size: 0.9rem; }
+        .statistics-title { text-align: center; font-size: 1.2em; }
+         .statistics-sections-container {
+            grid-template-columns: 1fr; 
+        }
+         .card-banner-image-container { 
+            padding-bottom: 40%; /* 移动端图片可以高一些，例如 5:2 */
+        }
+    }
+    @media (max-width: 480px) {
+        .profile-main-greeting { font-size: 1.5em; }
+        .aspirations { font-size: 1em; }
+        .statistics-title { font-size: 1.1em; }
+        .statistic-section h4 { font-size: 1em; }
+        .statistic-section ul { font-size: 0.85rem; }
+        .card-banner-image-container {
+            padding-bottom: 50%; /* 小屏幕恢复接近 2:1 */
+        }
+        .design-philosophy-card .card-content-area h3 { font-size: 1.3em; }
+        .design-philosophy-card .card-content-area p { font-size: 0.9rem; }
+    }
+</style>
+
+</head>
+<body class="content-page">
+    <div class="content-page-wrapper">
+        <div class="banner-card-container">
+            <div id="banner_home_image_wrapper">
+                <img src="images/banner1.jpg" alt="网站横幅图片1" class="active"/>
+                <img src="images/banner2.jpg" alt="网站横幅图片2" />
+                <img src="images/banner3.jpg" alt="网站横幅图片3" />
+            </div>
+            <div class="banner-text-content">
+                <h4>欢迎来到VQICE·闻祺声</h4>
+                <p>这里是声音与冰的交融之地，一个思想与感官共舞的空间。VQICE融合了Voice与Ice的精髓，巧妙嵌入"祺"的气息，呈现出蓝白交织的纯净世界。这个名字不仅是文字的组合，更是一种理念的诠释——如同冰晶折射阳光，声音穿透寂静。</p>
+                <p>在这个数字栖息地，我分享音乐的律动、思考的深度与创作的喜悦。每一篇文字，每一帧影像，每一段旋律，都如同声音在冰晶中传递，清澈而深远，在宁静中蕴含力量。声音是我对世界的表达，冰则是我的态度——克制而纯粹，冷静而富有温度。</p>
+                <p>这里没有喧嚣的浮躁，只有静谧的思考；没有刻意的雕琢，只有自然的流露。就像雪花落在湖面，涟漪轻轻扩散，每一个想法都在等待与你的心灵相遇。</p>
+                <p>当你漫步于此，或许会在某个角落，某篇文字，或某段音符中，找到与自己内心共振的频率。愿你在VQICE，找到那份共鸣，捕捉属于你的冰蓝灵感，在这片蓝白交织的世界里，发现声音的力量与冰的纯净。</p>
+                <p>欢迎来到我的世界，让我们一同聆听，一同感受，一同在声音与冰的交响中，探索生活的美妙与深邃。</p>
+            </div>
+        </div>
+
+        <div class="card profile-statistics-card">
+            <div class="profile-intro-header">
+                <h2 class="profile-main-greeting">个人简介</h2>
+            </div>
+
+            <div class="profile-main-content">
+                <div class="profile-left-column">
+                    <img src="images/profile_pic.png" alt="陈祺" class="profile-picture"/>
+                    <h3 class="profile-name">陈祺</h3>
+                    
+                    <div class="contact-info">
+                        <p><i class="fas fa-university"></i> 湖北大学 商学院</p>
+                        <p><i class="fas fa-graduation-cap"></i> 大数据管理与应用</p> 
+                        <p><i class="fas fa-envelope"></i> 2013860780@qq.com</p>
+                    </div>
+
+                    <h4 class="find-me-title">社交媒体与链接:</h4>
+                    <ul class="social-links-list">
+                        <li><a href="#" target="_blank"><i class="fab fa-qq"></i> QQ</a></li>
+                        <li><a href="#" target="_blank"><i class="fab fa-weixin"></i> 微信</a></li>
+                        <li><a href="#" target="_blank"><i class="fab fa-bilibili"></i> 哔哩哔哩</a></li>
+                    </ul>
+                </div>
+
+                <div class="profile-right-column">
+                    <p class="aspirations">我是一名热衷于探索商业模式、市场动态的<strong class="highlight-text">学习者、思考者与实践者</strong>，并期望未来能在商业教育领域贡献力量。</p>
+                    <p class="interests-description">
+                        我对经济的浪潮、企业的成长故事以及创新思维的火花充满好奇。我的学习与研究旨 在理解商业世界的内在逻辑和发展趋势，同时也在个人成长与实践中不断探索新的可能。
+                    </p>
+
+                    <h3 class="statistics-title">我的学习与实践成果</h3>
+                    <div class="statistics-sections-container">
+                        <div class="statistic-section">
+                            <h4><i class="fas fa-chart-pie"></i> 市场分析</h4>
+                            <ul>
+                                <li>参与完成5份行业市场分析报告，涉及电商、新能源等领域。</li>
+                                <li>独立完成3项消费者行为调研项目。</li>
+                            </ul>
+                        </div>
+                        <div class="statistic-section">
+                             <h4><i class="fas fa-feather-alt"></i> 内容创作</h4>
+                            <ul>
+                                <li>在知乎、微信公众号等平台发表商业评论与学习心得逾50篇。</li>
+                                <li>累计获得超过10万次阅读。</li>
+                            </ul>
+                        </div>
+                        <div class="statistic-section">
+                             <h4><i class="fas fa-rocket"></i> 项目实践</h4>
+                            <ul>
+                                <li>参与策划3个校园商业项目，涉及活动组织与品牌推广。</li>
+                                <li>为2个初创团队提供商业计划书撰写支持。</li>
+                            </ul>
+                        </div>
+                        <div class="statistic-section">
+                             <h4><i class="fas fa-award"></i> 荣誉奖项 (示例)</h4>
+                            <ul>
+                                <li>校级优秀学生干部</li>
+                                <li>“挑战杯”创业计划竞赛省赛三等奖</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card design-philosophy-card">
+            <div class="card-banner-image-container">
+                <img src="images/design_banner.jpg" alt="设计理念横幅" class="card-banner-image"/>
+            </div>
+            <div class="card-content-area">
+                <h3>设计理念</h3>
+                <p>VQICE 的设计旨在提供一个清晰、宁静且富有启发性的浏览体验。我相信优秀的设计不仅仅是美观，更在于其易用性和传递信息的能力。以下是我在构建这个空间时所遵循的一些核心原则：</p>
+                <ul class="design-points">
+                    <li><i class="fas fa-leaf"></i> <strong>简约至上：</strong> 避免不必要的视觉干扰，让内容成为焦点。我相信简洁的界面能带来更纯粹的阅读和思考空间。</li>
+                    <li><i class="fas fa-tint"></i> <strong>和谐配色：</strong> 选用柔和且具有呼吸感的色彩搭配，营造一个舒适、不刺眼的视觉环境，希望您在此能感受到片刻的安宁。</li>
+                    <li><i class="fas fa-font"></i> <strong>阅读优先：</strong> 精心选择易于阅读的字体和排版，确保文字信息的清晰传达，提升长时间阅读的舒适度。</li>
+                    <li><i class="fas fa-mouse-pointer"></i> <strong>直观导航：</strong> 提供清晰、一致的导航结构，让您可以轻松地在不同板块之间穿梭，快速找到感兴趣的内容。</li>
+                    <li><i class="fas fa-mobile-alt"></i> <strong>响应适配：</strong> 确保在不同尺寸的设备上都能获得良好的浏览体验，无论是桌面电脑、平板还是手机。</li>
+                </ul>
+                <p>最终，我希望 VQICE 不仅是一个信息的集合，更能成为一个能让您在其中愉悦探索、获得灵感的数字花园。感谢您的到访！</p>
+            </div>
+        </div>
+
+    </div>
+    <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var currentHomeBannerIndex = 0;
+        var homeBannerImages = [];
+        var homeBannerInterval;
+        var bannerElementHome = document.getElementById('banner_home_image_wrapper');
+        function showHomeBannerImage(index) {
+            if (homeBannerImages.length === 0) return;
+            homeBannerImages.forEach(function(img, i) {
+                img.classList.remove('active');
+                if (i === index) {
+                    img.classList.add('active');
+                }
+            });
+        }
+        function nextHomeBannerImage() {
+            if (homeBannerImages.length === 0) return;
+            currentHomeBannerIndex = (currentHomeBannerIndex + 1) % homeBannerImages.length;
+            showHomeBannerImage(currentHomeBannerIndex);
+        }
+        if (bannerElementHome) {
+            var imagesInBannerHome = bannerElementHome.getElementsByTagName('img');
+            for (var i = 0; i < imagesInBannerHome.length; i++) {
+                homeBannerImages.push(imagesInBannerHome[i]);
+            }
+            if (homeBannerImages.length > 0) {
+                showHomeBannerImage(currentHomeBannerIndex);
+                if (homeBannerImages.length > 1) {
+                    homeBannerInterval = setInterval(nextHomeBannerImage, 3000);
+                }
+            }
+        }
+    });
+    </script>
+</body>
+</html>

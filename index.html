@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>VQICE</title>
+
+<link rel="preload" href="css/all.min.css" as="style" />
+<link rel="preload" href="css/style.css" as="style" />
+
+<link rel="preload" href="fonts/AlibabaPuHuiTi-3-55-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+<link rel="preload" href="fonts/AlibabaPuHuiTi-3-85-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+<link rel="preload" href="fonts/WorkSans-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+<link rel="preload" href="fonts/WorkSans-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+
+<link href="css/all.min.css" rel="stylesheet" type="text/css" />
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript">
+// Polyfill for String.prototype.trim() for older browsers (IE8 and below)
+if (!String.prototype.trim) {
+  String.prototype.trim = function () {
+    return this.replace(/^\s+|\s+$/g, '');
+  };
+}
+// Function to search the site based on input
+function searchSite() {
+    var searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    var targetPage = '';
+    // Logic to determine the target page based on search term
+    if (searchTerm === '首页' || searchTerm === '个人介绍') {
+        targetPage = 'home_content.html';
+    } else if (searchTerm === '音乐') {
+        targetPage = 'music_content.html';
+	} else if (searchTerm === '书籍') {
+        targetPage = 'books_content.html';
+	} else if (searchTerm === '电影') {
+        targetPage = 'movies_content.html';	
+    } else if (searchTerm === '更多' || searchTerm === '关于我') {
+        targetPage = 'more_content.html';
+    } else if (searchTerm === '摄影' || searchTerm === 'photography') { 
+        targetPage = 'more_hobby_photography.html';
+    } else if (searchTerm === '代码' || searchTerm === '编程' || searchTerm === 'coding') { 
+        targetPage = 'more_hobby_coding.html';		
+    } else if (searchTerm === '旅行' || searchTerm === 'travel') { 
+        targetPage = 'more_hobby_travel.html';
+    } else if (searchTerm === '思考' || searchTerm === '随想'|| searchTerm === '随笔' || searchTerm === 'thoughts') { 
+        targetPage = 'more_thoughts1.html';		
+    } else if (searchTerm === '星际穿越') {
+        targetPage = 'movie_review1.html';
+    } else if (searchTerm === '阿甘正传') {
+        targetPage = 'movie_review2.html';
+    } else if (searchTerm === '千与千寻') {
+        targetPage = 'movie_review3.html';		
+	} else if (searchTerm === '三体') {
+        targetPage = 'book_review1.html';
+    } else if (searchTerm === '活着') {
+        targetPage = 'book_review2.html';
+    } else if (searchTerm === '百年孤独') {
+        targetPage = 'book_review3.html';		
+	} else if (searchTerm === '纯音乐') {
+        targetPage = 'music_playlist1.html';
+    } else if (searchTerm === '摇滚') {
+        targetPage = 'music_playlist2.html';
+    } else if (searchTerm === '电子') {
+        targetPage = 'music_playlist3.html';		
+    } else {
+        // Show a custom alert if no matching content is found
+        showCustomAlert('TAT...未找到与 "' + searchTerm + '" 相关的内容。试试其他关键词吧！');
+        return;
+    }
+    // If a target page is found, set the iframe source
+    if (targetPage) {
+        document.getElementById('contentFrame').src = targetPage;
+    }
+}
+// Function to show a custom alert message
+function showCustomAlert(message) {
+    var alertBox = document.createElement('div');
+    alertBox.setAttribute('style', `
+        position: fixed;
+        top: 20px; 
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 15px 25px;
+        background-color: var(--accent-primary); 
+        color: white;
+        border-radius: 8px;
+        box-shadow: var(--shadow-lg); 
+        z-index: 9999;
+        font-size: 0.95rem;
+        opacity: 0; 
+        transition: opacity 0.3s ease-in-out, top 0.3s ease-in-out; 
+    `);
+    alertBox.innerHTML = message;
+    document.body.appendChild(alertBox);
+    setTimeout(() => {
+        alertBox.style.opacity = '1';
+        alertBox.style.top = '30px'; 
+    }, 10); 
+    setTimeout(() => {
+        alertBox.style.opacity = '0';
+        alertBox.style.top = '20px'; 
+        setTimeout(() => {
+            if (alertBox.parentNode) { 
+                 document.body.removeChild(alertBox);
+            }
+        }, 300); 
+    }, 3000); 
+}
+// Function to set the active state for navigation links
+function setActiveNavLink() {
+    var contentFrame = document.getElementById('contentFrame');
+    var navLinks = document.querySelectorAll("#header-nav li a");
+    var defaultLink = document.querySelector("#header-nav li a[href='home_content.html']");
+
+    function activateLink(activeLink) {
+        navLinks.forEach(function(l){ l.classList.remove("active");});
+        if (activeLink) {
+            activeLink.classList.add("active");
+        } else if (defaultLink) { 
+            defaultLink.classList.add("active");
+        }
+    }
+
+    try {
+        var currentFrameSrcAttr = "home_content.html"; 
+
+        if (contentFrame) {
+            var srcAttr = contentFrame.getAttribute('src');
+            if (srcAttr && srcAttr !== "about:blank" && !srcAttr.endsWith('/') && !srcAttr.endsWith('index.html')) {
+                currentFrameSrcAttr = srcAttr;
+            }
+            if (contentFrame.contentWindow && contentFrame.contentWindow.location && contentFrame.contentWindow.location.href !== 'about:blank') {
+                var currentFrameHref = contentFrame.contentWindow.location.href;
+                var pageNameFromHref = currentFrameHref.substring(currentFrameHref.lastIndexOf('/') + 1);
+                if (pageNameFromHref && pageNameFromHref !== "index.html" && currentFrameHref.includes(".html")) {
+                    currentFrameSrcAttr = pageNameFromHref;
+                }
+            }
+        }
+        
+        var targetLink = document.querySelector(`#header-nav li a[href='${currentFrameSrcAttr}']`);
+        activateLink(targetLink || defaultLink);
+
+    } catch (e) {
+        console.warn("Error accessing iframe content for setting active nav link. Defaulting to home.", e);
+        activateLink(defaultLink); 
+    }
+}
+
+window.onload = function() {
+    var contentFrame = document.getElementById('contentFrame');
+    if (contentFrame) {
+        var initialSrc = contentFrame.getAttribute('src');
+        if (!initialSrc || initialSrc === "about:blank" || initialSrc.endsWith('/') || initialSrc.endsWith('index.html')) {
+            contentFrame.src = "home_content.html"; 
+        }
+        contentFrame.onload = function() {
+            setActiveNavLink();
+            if (contentFrame.getAttribute('src') === 'home_content.html') {
+                var preloadLink = document.createElement('link');
+                preloadLink.rel = 'preload';
+                preloadLink.href = 'images/banner1.jpg'; 
+                preloadLink.as = 'image';
+                document.head.appendChild(preloadLink);
+            }
+        };
+        setTimeout(setActiveNavLink, 150); 
+    } else {
+        setActiveNavLink();
+    }
+    var searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); 
+                searchSite();
+            }
+        });
+    }
+};
+</script>
+</head>
+<body>
+    <div id="container">
+        <div id="header">
+            <div id="site-title-group">
+                <h1>VQICE</h1> 
+            </div>
+            <div class="header-separator"></div>
+            <div id="header-nav-wrapper">
+                <ul id="header-nav">
+                    <li><a href="home_content.html" target="contentFrame"><i class="fas fa-home"></i>首页</a></li>
+                    <li><a href="music_content.html" target="contentFrame"><i class="fas fa-music"></i>音乐</a></li>
+                    <li><a href="books_content.html" target="contentFrame"><i class="fas fa-book-open"></i>书籍</a></li>
+                    <li><a href="movies_content.html" target="contentFrame"><i class="fas fa-film"></i>电影</a></li>
+                    <li><a href="more_content.html" target="contentFrame"><i class="fas fa-ellipsis-h"></i>更多</a></li>
+                </ul>
+            </div>
+            <div id="header-controls">
+                <div id="searchBox"> 
+                    <input type="text" id="searchInput" placeholder="搜索关键词..." />
+                    <button onclick="searchSite()">搜索</button>
+                </div>
+            </div>
+        </div>
+        <div id="main-layout-container">
+            <div id="right-content-area">
+                <div id="content">
+                    <iframe src="home_content.html" name="contentFrame" id="contentFrame" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+        <div id="footer">
+            <p>版权所有 &copy; 2025 VQICE | 联系方式: example@example.com</p> 
+        </div>
+    </div>
+</body>
+</html>
