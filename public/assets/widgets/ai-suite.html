@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="description" content="SEO Agent Skills 与 n8n Workflow 交互作品集，展示匿名化模块结构、流程与质量边界。"><title>Architecture × Agent Skills · Portfolio</title><style>
+:root{--paper:#fafafa;--night:#0a0a0a;--near:#eceef2;--gray:#6e727c;--darkgray:#34373e;--blue:#2b5bff;--grid:#cfd1d6;--mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Consolas,monospace;--text:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--ease:cubic-bezier(.22,1,.36,1)}
+*{box-sizing:border-box}html{min-width:320px;scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle,var(--grid) .9px,transparent 1px) 0 0/22px 22px,var(--paper);color:#191919;font-family:var(--text);-webkit-font-smoothing:antialiased}button{font:inherit}button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.gallery{width:min(1400px,calc(100% - 52px));margin:0 auto;padding:26px 0 70px}
+.bento{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-auto-rows:78px;gap:12px;align-items:stretch;align-content:start}
+.tile{grid-area:var(--place);position:relative;min-width:0;min-height:0;overflow:hidden;background:var(--night);border:1px solid #24272d;border-radius:20px;isolation:isolate;will-change:transform;transition:border-color .25s ease,box-shadow .35s ease,background .4s ease;contain:paint}
+.tile:not(.is-open):hover{border-color:#666a77;box-shadow:0 14px 36px rgba(10,10,10,.17)}
+.tile-trigger{display:block;position:absolute;inset:0;width:100%;height:100%;padding:0;margin:0;border:0;color:var(--near);background:#0a0a0a;text-align:left;cursor:pointer;overflow:hidden;border-radius:inherit;isolation:isolate}
+.tile-trigger::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(236,238,242,.034) 1px,transparent 1px),linear-gradient(90deg,rgba(236,238,242,.034) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.tile-trigger::after{content:"";position:absolute;inset:auto 0 0;height:50%;z-index:4;pointer-events:none;background:linear-gradient(0deg,rgba(10,10,10,.97) 4%,rgba(10,10,10,.72) 42%,transparent)}
+.tile-trigger .title{position:absolute;left:24px;bottom:21px;z-index:6;margin:0;font:600 clamp(14px,1.5vw,21px)/1.16 var(--mono);letter-spacing:-.055em;color:var(--near);overflow-wrap:anywhere;max-width:calc(100% - 42px)}
+.tile[data-area=a] .title,.tile[data-area=h] .title{font-size:clamp(23px,2.55vw,40px);letter-spacing:-.065em}
+.tile[data-area=c] .title,.tile[data-area=g] .title{font-size:clamp(12px,1.12vw,17px);left:16px;bottom:16px}
+.tile .scene{position:absolute;inset:-9% -8% 0;z-index:1;pointer-events:none}
+.scene-camera{width:100%;height:100%;will-change:transform;transform-origin:center;animation:camera-b 16s cubic-bezier(.45,.03,.54,.96) infinite alternate}
+.tile:nth-child(3n + 1) .scene-camera{animation-name:camera-a;animation-duration:19s}.tile:nth-child(4n + 2) .scene-camera{animation-name:camera-c;animation-duration:22s}.tile:nth-child(3n + 2) .scene-camera{animation-delay:-7s}.tile:nth-child(4n + 3) .scene-camera{animation-delay:-10s}
+.scene svg{width:100%;height:100%;display:block;overflow:visible}
+svg .line{fill:none;stroke:var(--darkgray);stroke-width:1.35;vector-effect:non-scaling-stroke}svg .mid{fill:none;stroke:#686d78;stroke-width:1.4;vector-effect:non-scaling-stroke}svg .bright{fill:none;stroke:var(--near);stroke-width:1.4;vector-effect:non-scaling-stroke}svg .blue{fill:none;stroke:var(--blue);stroke-width:2.4;vector-effect:non-scaling-stroke}svg .soft-fill{fill:#14161b}svg .mid-fill{fill:#242730}svg .blue-fill{fill:var(--blue)}svg .white-fill{fill:var(--near)}
+svg .flow{stroke-dasharray:7 19;animation:flow-dash 9s linear infinite}svg .flow-slow{stroke-dasharray:3 22;animation:flow-dash 17s linear infinite reverse}svg .radiate{transform-origin:center;transform-box:fill-box;animation:radiate 4s ease-in-out infinite}svg .blink{animation:blink 3.8s ease-in-out infinite}svg .blink2{animation:blink 4.6s ease-in-out -2s infinite}svg .hover-a{animation:hover-a 7.8s ease-in-out infinite alternate}svg .hover-b{animation:hover-b 9.2s ease-in-out -2s infinite alternate}svg .hover-c{animation:hover-c 8.5s ease-in-out -1s infinite alternate}svg .sweep{animation:sweep 7.5s ease-in-out infinite alternate}svg .pulse-path{stroke-dasharray:220 150;stroke-dashoffset:300;animation:dash-pulse 8s linear infinite}svg .grow{transform-origin:bottom;transform-box:fill-box;animation:grow 4.9s ease-in-out infinite alternate}svg .grow:nth-child(2n){animation-delay:-1.6s}svg .grow:nth-child(3n){animation-delay:-3.3s}
+.retic{position:absolute;z-index:5;width:10px;height:10px;opacity:.75;pointer-events:none}.retic::before,.retic::after{content:"";position:absolute;background:var(--darkgray)}.retic::before{width:10px;height:1px;left:0;top:4.5px}.retic::after{width:1px;height:10px;top:0;left:4.5px}.retic.tl{top:14px;left:14px}.retic.tr{top:14px;right:14px}.retic.bl{bottom:14px;left:14px}.retic.br{bottom:14px;right:14px}
+.tile[data-area=a]{--place:1/1/5/8}.tile[data-area=b]{--place:1/8/4/13}.tile[data-area=c]{--place:4/8/6/10}.tile[data-area=d]{--place:4/10/7/13}.tile[data-area=e]{--place:5/1/8/4}.tile[data-area=f]{--place:5/4/8/8}.tile[data-area=g]{--place:6/8/8/10}.tile[data-area=h]{--place:8/1/12/6}.tile[data-area=i]{--place:8/6/12/10}.tile[data-area=j]{--place:7/10/10/13}.tile[data-area=k]{--place:10/10/12/13}
+/* An open card remains a participant in grid layout; never a fixed overlay. */
+.tile.is-open{display:grid;grid-template-columns:minmax(0,.91fr) minmax(0,1.09fr);grid-template-rows:auto auto;align-items:stretch;background:#fff;border-color:#d7dbe2;border-radius:23px;box-shadow:0 17px 58px rgba(14,19,30,.11);contain:none}
+.tile.is-open .tile-trigger{position:relative;inset:auto;grid-column:1;grid-row:1;margin:17px;width:calc(100% - 17px);height:auto;min-height:390px;align-self:stretch;border-radius:16px;z-index:1}
+.tile.is-open .tile-trigger .title{font-size:clamp(25px,2.6vw,39px);left:25px;bottom:23px}
+.tile.is-open .tile-reveal{display:contents}
+.tile-reveal{display:none}
+.reveal-top{grid-column:2;grid-row:1;min-width:0;padding:33px 40px 24px 30px;color:#181a1e;display:flex;flex-direction:column;justify-content:space-between;gap:24px}
+.reveal-titleline{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.reveal-title{font:600 clamp(27px,2.8vw,43px)/1.14 var(--mono);letter-spacing:-.07em;margin:0;overflow-wrap:anywhere;color:#181a1e}
+.close-tile{flex:none;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:11px;background:#f4f5f6;border:1px solid #e0e3e7;color:#535866;cursor:pointer;transition:background .2s,color .2s,transform .24s ease}.close-tile:hover{background:#e8ebf2;color:#111;transform:rotate(90deg)}.close-tile svg{width:18px;height:18px}
+.story{font:400 clamp(14px,1.12vw,16px)/1.83 var(--text);color:#484b54;margin:0;max-width:80ch;text-wrap:pretty}
+.io-pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:11px}
+.io-card{min-height:150px;border:1px solid #dbdee4;border-radius:15px;padding:15px 17px 13px;min-width:0;overflow:hidden;background:linear-gradient(145deg,#fff,#fafafa);position:relative;transition:transform .32s var(--ease),border-color .3s ease,box-shadow .32s ease}
+.io-card:hover{transform:translateY(-2px);border-color:#b5c0e1;box-shadow:0 8px 24px rgba(10,10,10,.035)}
+.io-card::after{content:"";position:absolute;left:-38%;right:38%;bottom:0;height:2px;background:linear-gradient(90deg,transparent,var(--blue),transparent);opacity:.55;animation:io-scan 6s ease-in-out infinite}.io-card:nth-child(2)::after{animation-delay:-3s}
+.io-label{font:600 12px/1.3 var(--mono);color:#777b86;letter-spacing:-.01em;margin-bottom:10px}
+.io-list{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.io-list li{display:flex;align-items:flex-start;gap:8px;font:400 12px/1.65 var(--text);color:#444852;word-break:break-word;animation:text-breathe 7s ease-in-out infinite}
+.io-list li:nth-child(2){animation-delay:-2.3s}.io-list li:nth-child(3){animation-delay:-4.6s}
+.io-list li::before{content:"";flex:none;width:4px;height:4px;margin-top:8px;border-radius:50%;background:#7f8796}.io-card:first-child .io-list li:first-child::before{background:var(--blue)}
+.reveal-bottom{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.8fr);gap:12px;padding:0 17px 17px;min-width:0}
+.panel{border:1px solid #e0e2e7;background:#fafafa;border-radius:16px;min-width:0;padding:22px 26px}
+.panel-label{font:600 12px/1.3 var(--mono);color:#737782;letter-spacing:-.015em;margin:0 0 20px}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:16px}
+.step{display:grid;grid-template-columns:25px minmax(0,1fr);gap:13px;position:relative}
+.step:not(:last-child)::after{content:"";position:absolute;left:11px;top:28px;bottom:-15px;width:1px;background:#dfe2e8}
+.step-index{position:relative;z-index:2;display:grid;place-items:center;width:24px;height:24px;font:600 10px/1 var(--mono);background:#fff;border:1px solid #d6d9df;color:#777d89;border-radius:8px;transition:background .45s,border-color .45s,color .45s}
+.step.current .step-index{background:var(--blue);border-color:var(--blue);color:#fff}
+.step h3{margin:0 0 4px;font:600 14px/1.45 var(--text);color:#1d212a}.step p{margin:0;font:400 12px/1.7 var(--text);color:#5e616a;max-width:75ch}
+.panel-side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.panel-side .panel{flex:1;position:relative;overflow:hidden}.panel-side .panel::after{content:"";position:absolute;left:-22%;bottom:0;width:22%;height:2px;background:linear-gradient(90deg,transparent,var(--blue),transparent);opacity:.4;animation:panel-trace 9s ease-in-out infinite}.panel-side .panel:nth-child(2)::after{animation-delay:-4s}
+.guard-list{padding:0 0 0 17px;margin:0;display:grid;gap:11px;color:#565b66;font:400 12px/1.75 var(--text)}.guard-list li::marker{color:#969daa}.guard-list li{animation:text-breathe 9s ease-in-out infinite}.guard-list li:nth-child(2){animation-delay:-2.7s}.guard-list li:nth-child(3){animation-delay:-5.4s}
+.related-wrap{display:flex;flex-wrap:wrap;gap:7px}
+.related-button{padding:9px 11px;min-width:0;max-width:100%;border-radius:9px;border:1px solid #dddfe5;background:#fff;color:#3d424d;font:500 11px/1.4 var(--mono);cursor:pointer;transition:background .2s,border-color .2s}.related-button:hover{border-color:#b6c5ff;background:#f3f6ff}.related-button{animation:related-float 7s ease-in-out infinite}.related-button:nth-child(2){animation-delay:-2s}.related-button:nth-child(3){animation-delay:-4s}
+.tile.is-open .reveal-top,.tile.is-open .reveal-bottom{animation:reveal-in .5s .13s both var(--ease)}
+@keyframes reveal-in{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+@keyframes panel-trace{0%,100%{transform:translateX(-15%);opacity:.08}50%{transform:translateX(580%);opacity:.43}}@keyframes related-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.8px)}}
+@keyframes io-scan{0%,100%{transform:translateX(-40%);opacity:.1}50%{transform:translateX(110%);opacity:.58}}
+@keyframes text-breathe{0%,100%{opacity:.7}45%,67%{opacity:1}}
+@keyframes camera-a{0%{transform:translate3d(-8px,6px,0) scale(1.015)}48%{transform:translate3d(8px,-8px,0) scale(1.075)}100%{transform:translate3d(-3px,-13px,0) scale(1.035)}}
+@keyframes camera-b{0%{transform:translate3d(7px,-8px,0) scale(1.045)}50%{transform:translate3d(-9px,9px,0) scale(1.085)}100%{transform:translate3d(7px,1px,0) scale(1.025)}}
+@keyframes camera-c{0%{transform:translate3d(-11px,-5px,0) scale(1.06)}50%{transform:translate3d(5px,11px,0) scale(1.015)}100%{transform:translate3d(6px,-8px,0) scale(1.07)}}
+@keyframes flow-dash{to{stroke-dashoffset:-208}}@keyframes radiate{0%,100%{opacity:.25;transform:scale(.87)}50%{opacity:.9;transform:scale(1.1)}}@keyframes blink{0%,100%{opacity:.28}44%,60%{opacity:1}}@keyframes hover-a{0%{transform:translate(0,-7px)}100%{transform:translate(6px,10px)}}@keyframes hover-b{0%{transform:translate(6px,5px)}100%{transform:translate(-8px,-8px)}}@keyframes hover-c{0%{transform:translate(-4px,-5px)}100%{transform:translate(8px,5px)}}@keyframes sweep{0%{transform:translateY(-65px);opacity:.28}50%{opacity:.9}100%{transform:translateY(73px);opacity:.28}}@keyframes dash-pulse{to{stroke-dashoffset:-480}}@keyframes grow{0%{transform:scaleY(.65)}100%{transform:scaleY(1.15)}}
+@media(max-width:1050px){.gallery{width:calc(100% - 30px);padding-top:15px}.bento{grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:94px;gap:10px}.tile[data-area=a]{--place:1/1/4/5}.tile[data-area=b]{--place:1/5/4/7}.tile[data-area=c]{--place:4/1/6/3}.tile[data-area=d]{--place:4/3/6/7}.tile[data-area=e]{--place:6/1/8/4}.tile[data-area=f]{--place:6/4/8/7}.tile[data-area=g]{--place:8/1/10/3}.tile[data-area=h]{--place:8/3/11/7}.tile[data-area=i]{--place:10/1/13/3}.tile[data-area=j]{--place:11/3/13/5}.tile[data-area=k]{--place:11/5/13/7}.tile.is-open{grid-template-columns:1fr 1fr}.tile.is-open .tile-trigger{min-height:360px}.reveal-top{padding:24px 19px 18px 19px}.story{font-size:13px;line-height:1.72}.io-pair{grid-template-columns:1fr 1fr}.io-card{padding:11px}.reveal-bottom{grid-template-columns:1.2fr .9fr}.panel{padding:20px}}
+@media(max-width:700px){.gallery{width:calc(100% - 20px);padding-top:10px}.bento{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:102px;gap:9px}.tile{border-radius:15px}.tile[data-area=a]{--place:1/1/4/3}.tile[data-area=b]{--place:4/1/7/3}.tile[data-area=c]{--place:7/1/9/2}.tile[data-area=d]{--place:7/2/10/3}.tile[data-area=e]{--place:9/1/12/2}.tile[data-area=f]{--place:10/2/13/3}.tile[data-area=g]{--place:12/1/14/2}.tile[data-area=h]{--place:14/1/17/3}.tile[data-area=i]{--place:17/1/20/3}.tile[data-area=j]{--place:20/1/23/2}.tile[data-area=k]{--place:20/2/23/3}.tile-trigger .title{font-size:clamp(14px,3.9vw,18px);left:15px;bottom:16px}.tile[data-area=a] .title,.tile[data-area=h] .title{font-size:clamp(22px,7vw,32px)}.tile[data-area=c] .title,.tile[data-area=g] .title{font-size:clamp(11px,3.1vw,14px);left:11px}.tile.is-open{grid-template-columns:1fr;grid-template-rows:auto auto auto;border-radius:17px}.tile.is-open .tile-trigger{grid-column:1;grid-row:1;margin:10px;width:calc(100% - 20px);min-height:226px;height:226px;border-radius:12px}.tile.is-open .tile-trigger .title{font-size:clamp(23px,7vw,31px);left:18px;bottom:17px}.reveal-top{grid-column:1;grid-row:2;padding:11px 18px 20px;gap:17px}.reveal-title{font-size:clamp(22px,6vw,29px)}.close-tile{width:34px;height:34px}.story{font-size:13px;line-height:1.8}.io-pair{gap:8px}.io-card{padding:12px 11px;min-height:151px;border-radius:12px}.io-list li{font-size:11px}.reveal-bottom{grid-column:1;grid-row:3;grid-template-columns:1fr;padding:0 10px 10px;gap:9px}.panel{padding:17px;border-radius:13px}.steps{gap:17px}.step h3{font-size:13px}.step p{font-size:11px;line-height:1.75}.panel-side{gap:9px}.tile.is-open .scene svg{opacity:.95}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}.scene-camera{transform:none!important}}
+
+/* ---------- Combined light system: no dark frame when a card expands ---------- */
+:root{--paper:#fbfbfc;--night:#ffffff;--near:#1d2027;--gray:#6e727c;--darkgray:#c9ced7;--grid:#d4d7dd}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{background:radial-gradient(circle,#d2d5db .8px,transparent 1px) 0 0/24px 24px,var(--paper)}
+.gallery{overflow-anchor:none;padding-top:14px;padding-bottom:80px;opacity:1;transform-origin:50% 0;will-change:auto;transition:none}
+.tile{background:#fff;border:1px solid #daddE4;box-shadow:0 3px 14px rgba(31,37,51,.025);transition:border-color .28s ease,box-shadow .4s ease;border-radius:20px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.tile:not(.is-open):hover{border-color:#aebbf5;box-shadow:0 13px 35px rgba(24,40,79,.08)}
+.tile-trigger{background:#fff;color:#1d2027;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.tile-trigger::before{background-image:linear-gradient(rgba(110,114,124,.038) 1px,transparent 1px),linear-gradient(90deg,rgba(110,114,124,.038) 1px,transparent 1px);background-size:60px 60px}
+.tile-trigger::after{height:45%;background:linear-gradient(0deg,rgba(255,255,255,.98),rgba(255,255,255,.8) 37%,rgba(255,255,255,0) 100%)}
+.tile-trigger .title{color:#1c1e23}
+.scene svg .line{stroke:#d2d5dc}.scene svg .mid{stroke:#9197a2}.scene svg .bright{stroke:#171c28}.scene svg .soft-fill{fill:#f6f7f9}.scene svg .mid-fill{fill:#e6e9ee}.scene svg .white-fill{fill:#2b303c}
+.scene svg .blue-fill{fill:#2b5bff}
+.tile .retic{opacity:.8}.tile .retic::before,.tile .retic::after{background:#c5c9d2}
+.tile.is-open{background:#fff;border-color:#c8d0e1;box-shadow:0 15px 42px rgba(22,31,58,.085)}
+.tile.is-open .tile-trigger{background:#fff}
+.tile.is-open .tile-trigger::after{background:linear-gradient(0deg,#fff 0%,rgba(255,255,255,.77) 35%,transparent 100%)}
+.tile.is-open .scene-camera{animation-play-state:paused;transform:translate3d(0,0,0) scale(1.03)}
+.tile.is-open .reveal-top,.tile.is-open .reveal-bottom{animation:reveal-in .62s .13s both cubic-bezier(.2,.9,.25,1)}
+.io-card{background:#fff}.panel{background:#fff}.io-card:hover{border-color:#bfcaff}
+.tile.is-open .tile-trigger{margin:15px;width:calc(100% - 15px)}
+@media(max-width:700px){.tile.is-open .tile-trigger{margin:10px;width:calc(100% - 20px)}}
+/* ---------- Architecture: white cards, orthogonal routes, 12-frame artwork ---------- */
+.architecture-stage{width:min(1400px,calc(100% - 52px));margin:26px auto 0;height:clamp(510px,68svh,565px);min-height:0;display:flex;align-items:stretch;position:relative}
+.architecture-shell{width:100%;height:100%;min-height:0;border:1px solid #daddE4;border-radius:24px;background:#fff;box-shadow:0 4px 22px rgba(22,31,58,.04);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(22px,2.5vw,35px);transform-origin:50% 20%;will-change:transform,opacity;isolation:isolate}
+.architecture-shell::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(110,114,124,.032) 1px,transparent 1px),linear-gradient(90deg,rgba(110,114,124,.032) 1px,transparent 1px);background-size:60px 60px}
+.arch-heading{position:relative;z-index:2;max-width:720px;display:grid;gap:16px}
+.arch-heading h1{margin:0;font:700 clamp(32px,4.8vw,68px)/1.03 var(--mono);letter-spacing:-.085em;color:#1c1e24}
+.arch-heading p{margin:0;font:400 clamp(12px,1.16vw,15px)/1.85 var(--text);color:#555a66;max-width:630px}
+.arch-flow{margin:16px 0 12px;position:relative;isolation:isolate;display:grid;grid-template-columns:1.06fr 1fr .96fr 1.06fr;gap:clamp(13px,2vw,30px);flex:1;align-content:center}
+.arch-connect{position:absolute;inset:0;pointer-events:none;z-index:0}.arch-connect svg{height:100%;width:100%;overflow:visible;display:block}.arch-connect .route-line{stroke:#bec4d0;stroke-width:1.4;fill:none;vector-effect:non-scaling-stroke}.arch-connect .route-cursor{fill:var(--blue);opacity:0}
+.arch-unit{min-width:0;position:relative;z-index:1;min-height:clamp(175px,16vw,218px);background:#fff;border:1px solid #dde0e7;border-radius:17px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 5px 20px rgba(18,25,46,.024);transition:border-color .4s ease,box-shadow .4s ease,transform .45s var(--ease);will-change:transform}
+.arch-unit.is-focused{border-color:#7d99ff;box-shadow:0 0 0 1px rgba(43,91,255,.06),0 10px 30px rgba(43,91,255,.065)}
+.arch-frame{position:relative;min-height:0;flex:1;overflow:hidden}
+.arch-visual{position:absolute;inset:0;display:block}.arch-visual img{width:100%;height:100%;object-fit:cover;display:block}
+.arch-unit h2{margin:0;padding:7px 18px 17px;color:#202329;font:600 clamp(15px,1.6vw,22px)/1.2 var(--mono);letter-spacing:-.065em;position:relative;z-index:1}
+.arch-lower{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:flex-end;gap:18px}
+.arch-review{display:flex;align-items:center;gap:13px;background:#fff;border:1px solid #dfe2e8;border-radius:14px;padding:13px 16px;min-width:0;max-width:460px}
+.review-mark{display:grid;place-items:center;flex:none;width:31px;height:31px;border:1px solid #c9d4ff;border-radius:9px;color:var(--blue)}
+.review-mark svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.arch-review div{min-width:0;display:grid;gap:4px}
+.arch-review b{font:600 13px/1.3 var(--mono);color:#22252c}
+.arch-review span:not(.review-mark){font:400 12px/1.4 var(--text);color:#6e727c}
+@media(max-width:1050px){.architecture-stage{width:calc(100% - 30px);height:clamp(495px,68svh,565px);min-height:0;margin-top:15px}.architecture-shell{height:100%;min-height:0;padding:24px}.arch-flow{gap:13px}.arch-unit{min-height:190px}.arch-unit h2{padding-left:12px;padding-bottom:13px}.arch-heading p{font-size:13px}}
+@media(max-width:700px){.architecture-stage{width:calc(100% - 20px);height:auto;min-height:0;margin-top:10px}.architecture-shell{height:auto;min-height:0;padding:21px 15px 18px;border-radius:17px}.arch-heading{gap:13px}.arch-heading h1{font-size:clamp(31px,9.5vw,46px)}.arch-heading p{font-size:12px;line-height:1.75;max-width:36ch}.arch-flow{grid-template-columns:repeat(2,minmax(0,1fr));margin:17px 0;gap:11px;align-content:center}.arch-unit{min-height:184px;border-radius:13px}.arch-unit h2{font-size:17px;padding:6px 12px 14px}.arch-review{padding:11px;gap:9px}.arch-review b{font-size:11px}.arch-review span:not(.review-mark){font-size:10px}.review-mark{height:27px;width:27px}}
+@media(max-width:380px){.arch-unit{min-height:172px}.arch-flow{margin:16px 0}.arch-heading p{font-size:11px}}
+@keyframes blink{0%,100%{opacity:.78}50%{opacity:.94}}
+@keyframes radiate{0%,100%{opacity:.78;transform:scale(.96)}50%{opacity:.94;transform:scale(1.04)}}
+@keyframes sweep{0%,100%{transform:translateY(-16px);opacity:.74}50%{transform:translateY(16px);opacity:.88}}
+@media(prefers-reduced-motion:reduce){.architecture-shell,.gallery{will-change:auto;transform:none!important;opacity:1!important}}
+
+/* === refined architecture + title subtitles === */
+.title .zh{display:block;margin-top:5px;font:400 clamp(11px,.84vw,13px)/1.25 var(--text);letter-spacing:0;color:rgba(236,238,242,.68)}
+.tile.is-open .tile-trigger .title .zh{color:rgba(236,238,242,.62)}
+.architecture-stage{width:min(1400px,calc(100% - 52px));margin:18px auto 0;height:clamp(398px,53svh,448px);min-height:0;display:flex;align-items:stretch;position:relative}
+.architecture-shell{width:100%;height:100%;min-height:0;border:1px solid #dadee5;border-radius:24px;background:#fff;box-shadow:0 4px 22px rgba(22,31,58,.035);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-start;gap:16px;padding:20px clamp(20px,2.2vw,28px) 18px;transform-origin:50% 20%;will-change:transform,opacity;isolation:isolate}
+.architecture-shell::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(110,114,124,.032) 1px,transparent 1px),linear-gradient(90deg,rgba(110,114,124,.032) 1px,transparent 1px);background-size:60px 60px}
+.arch-heading{position:relative;z-index:2;max-width:none;display:grid;grid-template-columns:max-content minmax(280px,640px);gap:18px 24px;align-items:end}
+.arch-heading h1{margin:0;font:700 clamp(32px,4.6vw,64px)/1.02 var(--mono);letter-spacing:-.086em;color:#1c1e24}
+.arch-heading p{margin:0;padding-bottom:7px;font:400 clamp(12px,1.02vw,14px)/1.72 var(--text);color:#555a66;max-width:58ch}
+.arch-flow{margin:0;position:relative;isolation:isolate;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;flex:1;align-content:stretch}
+.arch-connect{position:absolute;inset:0;pointer-events:none;z-index:0}.arch-connect svg{height:100%;width:100%;overflow:visible;display:block}.arch-connect .route-line{stroke:#c8cfdb;stroke-width:1.35;fill:none;vector-effect:non-scaling-stroke}.arch-connect .route-cursor{fill:var(--blue);opacity:0}
+.arch-unit{min-width:0;position:relative;z-index:1;min-height:clamp(176px,14vw,208px);background:#0a0a0a;border:1px solid #24272d;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:none;transition:border-color .4s ease,box-shadow .4s ease,transform .45s var(--ease);will-change:transform}
+.arch-unit.is-focused{border-color:#6e8cff;box-shadow:0 0 0 1px rgba(43,91,255,.15),0 16px 34px rgba(12,16,24,.18)}
+.arch-frame{position:relative;min-height:0;flex:1;overflow:hidden}
+.arch-visual{position:absolute;inset:0;display:block}.arch-visual svg{width:100%;height:100%;display:block}
+.arch-unit h2{margin:0;padding:8px 16px 14px;color:#eceef2;font:600 clamp(16px,1.45vw,21px)/1.15 var(--mono);letter-spacing:-.065em;position:relative;z-index:1}
+.arch-unit h2 small{display:block;margin-top:4px;font:400 11px/1.28 var(--text);letter-spacing:0;color:#6e727c}
+.arch-poster-bg{fill:#0a0a0a}.arch-grid path{stroke:rgba(236,238,242,.05);stroke-width:1}.arch-ink{stroke:#eceef2;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.arch-ink-fill{fill:#eceef2}.arch-muted{stroke:#6e727c;fill:none;stroke-width:1.45;stroke-linecap:round;stroke-linejoin:round}.arch-muted-fill{fill:#6e727c}.arch-blue{stroke:var(--blue);fill:none;stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round}.arch-blue-fill{fill:var(--blue)}
+.arch-card svg .float-y{animation:archFloat 3.6s ease-in-out infinite}.arch-card svg .pulse-a{animation:archPulse 3.2s ease-in-out infinite}.arch-card svg .drift-x{animation:archShift 4.2s ease-in-out infinite}.arch-card svg .orbit-a{transform-origin:450px 270px;animation:archOrbit 4.8s linear infinite}.arch-card svg .flow{stroke-dasharray:11 17;animation:archDash 4.4s linear infinite}
+@keyframes archFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes archPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.72;transform:scale(1.08)}}
+@keyframes archShift{0%,100%{transform:translateX(0)}50%{transform:translateX(10px)}}
+@keyframes archOrbit{0%{transform:rotate(0deg) translateX(0)}50%{transform:rotate(12deg)}100%{transform:rotate(0deg)}}
+@keyframes archDash{to{stroke-dashoffset:-56}}
+@media(max-width:1050px){.architecture-stage{width:calc(100% - 30px);height:auto;min-height:0;margin-top:14px}.architecture-shell{height:auto;min-height:0;padding:18px}.arch-heading{grid-template-columns:1fr;gap:10px}.arch-heading p{padding-bottom:0;font-size:13px;max-width:44ch}.arch-flow{gap:12px}.arch-unit{min-height:188px}.arch-unit h2{padding-left:13px;padding-bottom:13px}}
+@media(max-width:700px){.architecture-stage{width:calc(100% - 20px);height:auto;min-height:0;margin-top:10px}.architecture-shell{height:auto;min-height:0;padding:16px 14px 14px;border-radius:17px;gap:12px}.arch-heading h1{font-size:clamp(31px,9.5vw,46px)}.arch-heading p{font-size:12px;line-height:1.68;max-width:32ch}.arch-flow{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.arch-unit{min-height:174px;border-radius:16px}.arch-unit h2{font-size:16px;padding:8px 12px 12px}}
+
+
+/* 12 x 900×600 / 12 frames × 110ms WEBP — static text overlay, one quiet motion layer */
+.tile[data-area=l]{--place:12/1/16/13}
+.tile,.tile-trigger{background:#0a0a0a}
+.tile-trigger,.tile.is-open .tile-trigger{background:#0a0a0a!important}
+.tile-trigger::before{display:none!important}
+.tile-trigger::after,.tile.is-open .tile-trigger::after{background:linear-gradient(0deg,rgba(10,10,10,.98) 0%,rgba(10,10,10,.86) 25%,rgba(10,10,10,0) 80%)!important;height:57%}
+.tile .scene{position:absolute;inset:0;z-index:1;overflow:hidden}
+.tile .scene-camera,.tile.is-open .scene-camera{width:100%;height:100%;animation:none!important;transform:none!important;will-change:auto!important}
+.tile .scene picture,.tile .scene img{width:100%;height:100%;display:block}
+.tile .scene img{object-fit:cover;object-position:center}
+.tile .retic{display:none}
+.tile .tile-trigger .title,.tile.is-open .tile-trigger .title{color:#eceef2!important;text-shadow:none}
+.tile .tile-trigger .title .zh,.tile.is-open .tile-trigger .title .zh{color:#d2d5de!important;font:500 clamp(13px,1.01vw,16px)/1.35 var(--text);letter-spacing:0;margin-top:7px}
+.tile .title{line-height:1.14;bottom:19px}
+.tile[data-area=c] .title,.tile[data-area=g] .title{font-size:clamp(15px,1.35vw,21px);left:17px;bottom:18px}
+.tile[data-area=l] .title{font-size:clamp(26px,2.45vw,38px);left:30px;bottom:28px}
+.tile.is-open .tile-trigger .title{font-size:clamp(26px,2.6vw,39px)}
+.tile.is-open .tile-trigger .title .zh{font-size:16px}
+.tile.is-open .tile-trigger{border:1px solid #34373e!important}
+.reveal-top .story{font-size:clamp(15px,1.18vw,17px);line-height:1.82;color:#363b47}
+.reveal-title{font-size:clamp(29px,2.6vw,41px)}
+.io-label,.panel-label{font-size:13px;color:#4a5060}
+.io-list li{font-size:clamp(13px,1.02vw,15px);line-height:1.62;color:#303745}
+.step h3{font-size:clamp(15px,1.1vw,17px)}
+.step p{font-size:clamp(13px,1.02vw,15px);line-height:1.73;color:#424a57}
+.guard-list{font-size:clamp(13px,1.01vw,15px);line-height:1.7;color:#394452}
+.related-button{font-size:13px}
+.arch-unit h2 small{font-size:13px;color:#c7cbd4}
+.arch-heading p{font-size:clamp(13px,1.03vw,15px)}
+@media(max-width:700px){.tile[data-area=l] .title{left:18px;bottom:19px;font-size:25px}.tile .tile-trigger .title .zh{font-size:13px}.reveal-top .story{font-size:15px}.arch-unit h2 small{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.tile .scene-camera{animation:none!important}.tile .scene img{animation:none!important}}
+
+</style><link rel="stylesheet" href="/assets/widgets/ai-suite.css?v=1"></head>
+<body><section class="architecture-stage" id="architecture" aria-label="Architecture">
+  <div class="architecture-shell" id="architectureShell">
+    <div class="arch-heading">
+      <h1>Architecture <small class="arch-zh">架构</small></h1>
+      <p>Agent读取Skills中的执行规范，通过MCP调用已授权工具；系统回传结果，再进入校验与审核。</p>
+    </div>
+    <div class="arch-flow" id="archFlow">
+      <div class="arch-connect" aria-hidden="true"><svg id="archWires" preserveAspectRatio="none"></svg></div>
+
+      <div class="arch-unit" data-role="agent">
+        <div class="arch-frame">
+          <div class="arch-visual arch-card" aria-hidden="true">
+            <svg viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+              <rect width="900" height="600" class="arch-poster-bg"/>
+              <g class="arch-grid" opacity=".8">
+                <path d="M0 60H900 M0 180H900 M0 300H900 M0 420H900 M0 540H900"/>
+                <path d="M60 0V600 M240 0V600 M420 0V600 M600 0V600 M780 0V600"/>
+              </g>
+              <g class="arch-muted" opacity=".9">
+                <path d="M38 40h12M44 34v12 M850 40h12M856 34v12 M38 560h12M44 554v12 M850 560h12M856 554v12"/>
+              </g>
+              <g transform="translate(0 -10)">
+                <circle cx="450" cy="270" r="136" class="arch-muted"/>
+                <circle cx="450" cy="270" r="88" class="arch-ink"/>
+                <circle cx="450" cy="270" r="38" class="arch-ink"/>
+                <circle cx="450" cy="270" r="12" class="arch-ink-fill pulse-a"/>
+                <circle cx="586" cy="270" r="10" class="arch-blue-fill orbit-a"/>
+                <circle cx="450" cy="134" r="8" class="arch-muted-fill float-y"/>
+                <circle cx="450" cy="406" r="8" class="arch-muted-fill float-y" style="animation-delay:-1.1s"/>
+                <circle cx="314" cy="270" r="8" class="arch-muted-fill float-y" style="animation-delay:-2.1s"/>
+                <path d="M340 468H560" class="arch-muted"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <h2>Agent<small>执行代理</small></h2>
+      </div>
+
+      <div class="arch-unit" data-role="skills">
+        <div class="arch-frame">
+          <div class="arch-visual arch-card" aria-hidden="true">
+            <svg viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+              <rect width="900" height="600" class="arch-poster-bg"/>
+              <g class="arch-grid" opacity=".8">
+                <path d="M0 60H900 M0 180H900 M0 300H900 M0 420H900 M0 540H900"/>
+                <path d="M60 0V600 M240 0V600 M420 0V600 M600 0V600 M780 0V600"/>
+              </g>
+              <g class="arch-muted" opacity=".9">
+                <path d="M38 40h12M44 34v12 M850 40h12M856 34v12 M38 560h12M44 554v12 M850 560h12M856 554v12"/>
+              </g>
+              <g>
+                <rect x="318" y="152" width="240" height="298" rx="18" class="arch-muted" fill="rgba(255,255,255,.02)"/>
+                <rect x="350" y="126" width="240" height="298" rx="18" class="arch-muted drift-x" fill="rgba(255,255,255,.02)"/>
+                <rect x="286" y="178" width="240" height="298" rx="18" class="arch-ink" fill="rgba(255,255,255,.02)"/>
+                <path d="M370 248H492" class="arch-ink"/>
+                <path d="M370 298H462" class="arch-muted"/>
+                <path d="M370 338H482" class="arch-muted"/>
+                <path d="M370 378H448" class="arch-muted"/>
+                <path d="M370 418H430" class="arch-blue flow"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <h2>Skills<small>执行规范</small></h2>
+      </div>
+
+      <div class="arch-unit" data-role="mcp">
+        <div class="arch-frame">
+          <div class="arch-visual arch-card" aria-hidden="true">
+            <svg viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+              <rect width="900" height="600" class="arch-poster-bg"/>
+              <g class="arch-grid" opacity=".8">
+                <path d="M0 60H900 M0 180H900 M0 300H900 M0 420H900 M0 540H900"/>
+                <path d="M60 0V600 M240 0V600 M420 0V600 M600 0V600 M780 0V600"/>
+              </g>
+              <g class="arch-muted" opacity=".9">
+                <path d="M38 40h12M44 34v12 M850 40h12M856 34v12 M38 560h12M44 554v12 M850 560h12M856 554v12"/>
+              </g>
+              <g>
+                <rect x="264" y="216" width="118" height="104" rx="14" class="arch-ink"/>
+                <rect x="516" y="216" width="118" height="104" rx="14" class="arch-ink"/>
+                <rect x="390" y="342" width="118" height="104" rx="14" class="arch-ink"/>
+                <circle cx="323" cy="268" r="8" class="arch-muted-fill"/>
+                <circle cx="575" cy="268" r="8" class="arch-muted-fill"/>
+                <circle cx="449" cy="394" r="8" class="arch-muted-fill"/>
+                <path d="M382 268H516 M449 320V342" class="arch-muted"/>
+                <circle cx="449" cy="268" r="11" class="arch-blue-fill pulse-a"/>
+                <circle cx="449" cy="324" r="9" class="arch-blue-fill pulse-a" style="animation-delay:-1.7s"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <h2>MCP<small>工具协议</small></h2>
+      </div>
+
+      <div class="arch-unit" data-role="systems">
+        <div class="arch-frame">
+          <div class="arch-visual arch-card" aria-hidden="true">
+            <svg viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+              <rect width="900" height="600" class="arch-poster-bg"/>
+              <g class="arch-grid" opacity=".8">
+                <path d="M0 60H900 M0 180H900 M0 300H900 M0 420H900 M0 540H900"/>
+                <path d="M60 0V600 M240 0V600 M420 0V600 M600 0V600 M780 0V600"/>
+              </g>
+              <g class="arch-muted" opacity=".9">
+                <path d="M38 40h12M44 34v12 M850 40h12M856 34v12 M38 560h12M44 554v12 M850 560h12M856 554v12"/>
+              </g>
+              <g>
+                <rect x="220" y="150" width="460" height="270" rx="22" class="arch-ink"/>
+                <circle cx="270" cy="188" r="8" class="arch-muted-fill"/>
+                <circle cx="302" cy="188" r="8" class="arch-muted-fill"/>
+                <path d="M250 244H462" class="arch-muted"/>
+                <rect x="250" y="282" width="182" height="122" rx="12" class="arch-muted"/>
+                <rect x="458" y="282" width="160" height="52" rx="10" class="arch-muted"/>
+                <rect x="458" y="352" width="160" height="52" rx="10" class="arch-muted"/>
+                <path d="M490 378H566" class="arch-blue flow"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <h2>Systems<small>业务系统</small></h2>
+      </div>
+    </div>
+  </div>
+</section>
+<main class="gallery" id="skills" aria-label="11 Agent Skills"><h2 class="suite-section-title">Skills</h2><div class="bento" id="bento"></div></main>
+<section class="workflow-section" aria-labelledby="workflow-heading">
+  <h2 class="suite-section-title" id="workflow-heading">n8n workflows</h2>
+  <article class="workflow-tile">
+  <button class="workflow-cover" type="button" aria-expanded="false" aria-controls="workflow-details"><picture><source media="(prefers-reduced-motion:reduce)" srcset="/assets/ai-suite/n8n-wide.png"><img src="/assets/ai-suite/n8n-wide.webp" alt="n8n site audit workflow" loading="lazy" decoding="async" width="1800" height="480"></picture><span class="workflow-cover-action" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m6 10 6 6 6-6"/></svg></span></button>
+  <div class="workflow-expand" id="workflow-details" hidden><iframe class="workflow-replay" title="n8n 多语言站点巡检工作流" data-src="/assets/widgets/n8n-replay-dark.html" loading="lazy"></iframe></div></article>
+</section><script>
+'use strict';
+const SKILLS=[{"id": "article-craft", "name": "article-craft", "kind": "article", "area": "a", "group": "内容生产", "intro": "写一篇高质量的SEO文章，最耗时的往往不是落笔，而是弄清搜索者真正想解决什么、核对产品能否完成这些操作，再准备准确的截图和页面字段。这项Skill把SERP调研、选题去重、内容结构、图文匹配和文章建文串在一起。使用时从关键词和目标读者开始，逐步形成可以回读检查的待审核稿；事实不确定或素材不匹配的地方会留下人工核验空间。", "inputs": ["主关键词、目标读者与语言", "搜索结果中的真实需求与竞争内容", "可验证的产品功能和已有素材"], "outputs": ["具备SEO结构的文章HTML", "完成配图、内链和元信息的审核草稿", "可回查的创建结果与待验证项目"], "steps": [["意图与证据", "识别搜索意图及读者要完成的具体任务，对比主流结果的步骤覆盖、遗漏与差异点；对格式、兼容性和产品能力进行事实核验。"], ["主题与结构", "检索同主题内容避免重复建设，整理主要与次要关键词；围绕问题、操作路径和结果组织H2/H3，而不是堆砌通用定义。"], ["图文配套", "优先查找真实功能界面及已有可复用素材；缺少合适图片时再补示意图，检查alt、图注和图片语义是否对应。"], ["内容组装", "编排可执行步骤、注意事项、FAQ、相关内容内链与行动入口；统一HTML语义、标题层级和基础元信息。"], ["草稿校验", "核验分类、语言、页面地址和必要字段；写入待审核状态，并回读页面，人工确认后才进入发布。"]], "guards": ["不编造产品能力、转换结果或界面操作", "优先复用经过验证的截图，不用虚构产品界面", "新内容不自动发布，保留人工审核门槛"], "links": ["access-gateway", "asset-library", "content-manager"]}, {"id": "batch-compose", "name": "batch-compose", "kind": "batch", "area": "b", "group": "批量生产", "intro": "当选题进入批量生产阶段，重复创建页面、填写字段和逐条检查状态很容易占用大量运营时间。这项Skill先由人确定关键词清单和通用规则，再逐项生成内容并独立写入，最后把每篇成功、失败或需要返工的情况整理出来。交付的是一批可继续审稿的草稿，而不是未经确认就上线的文章。", "inputs": ["人工提供或已选中的关键词集合", "目标内容形态、站点与语言", "共用的创作规则和字段约束"], "outputs": ["批量草稿与逐项状态", "成功、失败及待修正清单", "可复查的输入和字段映射"], "steps": [["确定批次", "从自备关键词或候选趋势中选定清单，先确认处理数量，不默认全量生成。"], ["共享配置", "确定内容类型、语言和分类，再把一套可复用的页面字段规则应用到同批条目。"], ["逐项构建", "按关键词生成标题、内容与必要元数据，同时检查重复主题和必填字段。"], ["独立写入", "为每条内容单独处理创建结果，避免局部失败使整个批次状态不透明。"], ["输出回执", "汇总每条内容的草稿状态、未通过项目及原因，交由人工逐条审核。"]], "guards": ["批量目标必须经过用户选定", "禁止以任务提交成功替代逐条结果确认", "所有新条目均保留审核步骤"], "links": ["access-gateway", "content-manager", "asset-library"]}, {"id": "content-manager", "name": "content-manager", "kind": "manage", "area": "c", "group": "内容管理", "intro": "日常内容运营需要不断查询已有文章、补充素材、调整字段，也会遇到文章、组件页和问答内容混在一起的情况。这个Skill让这些单条操作可以从自然语言发起，但每次修改前都先查明对象、站点范围和现有状态，再根据内容类型执行相应操作。最后重新读取结果，确认改动落在了正确的记录上。", "inputs": ["目标内容类型与站点/语言范围", "标题、关键词、正文、素材或修改字段", "对应页面的分类、地址与当前状态"], "outputs": ["检索结果与内容详情", "新建或更新后的记录及操作回执", "可审查的内容状态与关联信息"], "steps": [["查找对象", "按内容类型、语言或关键词定位页面，回读现有字段，避免在未知状态下直接覆写。"], ["检查配置", "确认站点、分类和页面路径约束；必要时从已有配置中获取可用选项，避免构造无效页面关系。"], ["选择操作", "根据任务执行单条创建、字段更新、查询或状态管理；素材问题先走素材匹配。"], ["结果复核", "重新获取内容详情，对比关键字段、页面状态和关联关系，输出明确的执行结果。"]], "guards": ["新建内容先进入审核态，不在无授权情况下发布", "热点、趋势和重定向以查询为主，不越权执行后台管理操作", "修改前先读取实际记录，避免凭猜测提交字段"], "links": ["access-gateway", "asset-library", "batch-compose", "batch-refine"]}, {"id": "batch-refine", "name": "batch-refine", "kind": "refine", "area": "d", "group": "批量维护", "intro": "存量文章积累起来之后，标题、正文片段、说明文案或其他字段往往需要按同一套规则统一修订。这里先筛选准确的目标范围，再将自然语言要求拆成可检查的字段差异，保护不能被破坏的页面结构。每条记录独立更新并保留原有发布状态，方便运营人员识别失败项与高风险改动。", "inputs": ["需要处理的内容范围", "明确的优化规则与预期字段", "已有页面正文、布局片段和发布状态"], "outputs": ["改动前后的差异记录", "逐条更新结果和失败原因", "状态保持一致的更新后内容"], "steps": [["限定范围", "先按内容形态、语言、筛选条件查出目标记录，确认清单，避免误改整个站点。"], ["建立变更集", "把自然语言指令拆分为字段级变更，展示更新前后的差异供检查。"], ["结构保护", "对正文内不可改动的注入节点和页面片段进行保护，非目标字段保持原样。"], ["写入校验", "必要时核对分类、语言与页面路径关系；对校验失败的记录停止写入。"], ["逐条汇报", "保留每条记录原有发布状态，统计实际成功和失败项，突出需人工复检的大改动。"]], "guards": ["不破坏嵌入式组件的保留标记", "不因内容优化自动改变发布状态", "高风险批次需先预览差异"], "links": ["content-manager", "access-gateway", "page-standard"]}, {"id": "multilingual-flow", "name": "multilingual-flow", "kind": "translate", "area": "e", "group": "多语言运营", "intro": "多语言内容扩展不只是把正文翻译成另一种语言。源页的内部链接是否存在对应语言版本、文章是否有目标语分类，都会影响最终页面能否正确使用。这个Skill在提交任务之前逐条检查映射关系，执行后持续追踪异步结果，把缺口、失败和待审译文明确交给运营人员。", "inputs": ["源页面及真实内容类型", "目标语言集合", "目标语言的分类与已有文章映射"], "outputs": ["可跟踪的翻译任务与执行结果", "本地化后的内容审核稿", "逐语言缺口或异常报告"], "steps": [["识别源页", "检查页面类型和目标语言支持范围，不把不同类型混入无法共用规则的批次。"], ["预检映射", "逐语言确认内部链接是否有目标语版本；需要分类的内容还要确认目标语分类映射。"], ["阻断缺口", "遇到缺失内链或分类关系时停止对应任务，并把需要人工补齐的项目明示出来。"], ["执行与轮询", "创建并运行异步翻译任务，持续读取状态，区分已提交、处理中、失败与完成。"], ["验收译文", "核查输出记录、内链与分类是否一致；完成的译文仍保持待审核，不自动上线。"]], "guards": ["任务提交成功不等于翻译完成", "分类与内链映射缺失时不猜测填充", "保留人工语言审核与发布权限"], "links": ["access-gateway", "content-manager"]}, {"id": "asset-library", "name": "asset-library", "kind": "assets", "area": "f", "group": "素材复用", "intro": "制作教程时经常需要一张准确的功能截图，最理想的做法不是每篇文章重新找图，而是先检索现有素材，判断它是否真的对应当前场景。这项Skill把候选检索、图片回退、必要时的上传归档和页面关联组织成一个流程。复用可以减少重复劳动，新素材则在获得确认后才进入共享素材库。", "inputs": ["文章主题或需要展示的功能", "候选图片、语言和语义描述", "需要时由用户提供的本地图片"], "outputs": ["匹配的可复用图片", "经过确认的新增素材记录", "页面图片与素材元数据的关联"], "steps": [["素材检索", "根据功能、标题、alt和主题词查找已有素材，判断是否真正覆盖要表达的操作场景。"], ["候选回退", "优先选用素材库记录；不足时才参考已有页面图片，并避免跨主题错配。"], ["上传与归档", "仅在确定需要新素材且获批准时上传，记录用途、语言与描述等可复用元信息。"], ["页面关联", "将可访问的图片地址用于文章或组件，并在保存后核验关联关系。"]], "guards": ["不将演示素材伪装为真实产品截图", "不未经确认擅自新增或覆盖素材库记录", "复用前检查图片实际内容与上下文是否匹配"], "links": ["article-craft", "content-manager", "batch-compose"]}, {"id": "feature-landing", "name": "feature-landing", "kind": "landing", "area": "g", "group": "落地页", "intro": "功能型落地页既要回答搜索问题，也要让用户快速理解产品能做什么、如何使用，以及下一步点哪里。这项Skill围绕关键词与任务场景组织首屏、功能证据、How-to、FAQ和CTA，再将布局、技术SEO与行为事件接入同一页面。结果是可供设计、运营和开发继续审查的页面交付，而不是一张缺少真实功能依据的概念图。", "inputs": ["目标功能与主要搜索意图", "产品实际可用能力和图文素材", "页面区块和转化目标"], "outputs": ["分区清晰的功能型HTML页面", "具备SEO语义和事件触点的结构", "可用于设计/运营复核的完整交付"], "steps": [["定义页面任务", "从核心关键词映射目标用户的真实痛点，明确首屏应传达的结果和主要动作。"], ["设计转化路径", "组织首屏、痛点说明、功能证据、操作教程、FAQ、关联内容与CTA，形成连贯的阅读动线。"], ["实现页面交互", "组合自适应布局、导航定位、折叠说明、功能展示与行动按钮，保证交互有明确目的。"], ["整合真实素材", "重要能力对应实际产品证据，不使用虚构的界面或未经验证的模板图。"], ["SEO与测量验收", "检查语义标题、结构化信息、移动体验及关键行为事件；人工确认后交付。"]], "guards": ["不对外暴露内部组件调用方式或私有路径", "所有功能描述以可证实能力为准", "下载行为必须同时满足功能与测量规范"], "links": ["page-standard", "layout-kit", "event-measure", "asset-library"]}, {"id": "event-measure", "name": "event-measure", "kind": "analytics", "area": "h", "group": "效果测量", "intro": "页面上的按钮被点击、用户开始下载，和最终完成下载是不同的行为，埋点也应该有清楚的区分。这项Skill从页面目标出发定义事件，约束触发位置与参数口径，再检查是否漏发或重复触发。它输出可复用的测量约定，帮助后续评估入口和交互效果，而不会把意向动作误写成转化结果。", "inputs": ["页面的关键转化目标", "需要衡量的点击、提交或浏览行为", "经批准的标签管理环境"], "outputs": ["可复用的事件触发封装", "页面访问及交互行为信号", "便于后续数据分析的参数约定"], "steps": [["定义事件", "区分页面浏览、下载意向、按钮点击和表单提交等关键行为，明确每个事件的业务含义。"], ["对齐触发点", "把事件绑定到真正发生的用户动作，而非仅在页面加载时虚构点击或转化。"], ["参数规范", "使用一致的页面与组件上下文，保持命名稳定，避免后续报表口径不一致。"], ["验证链路", "检查事件是否重复触发、是否漏发，以及关键参数是否在允许范围内。"]], "guards": ["展示代码不包含真实分析资产ID或管理后台配置", "不采集敏感用户信息作为事件参数", "不能把点击事件直接宣称为已完成下载"], "links": ["feature-landing", "layout-kit", "page-standard"]}, {"id": "layout-kit", "name": "layout-kit", "kind": "layout", "area": "i", "group": "页面组件", "intro": "当不同功能页反复出现导航、CTA、FAQ和页脚时，逐页重新拼装容易带来视觉与交互上的不一致。这个Skill将常用结构沉淀为可组合的部件，并根据页面是否已经拥有外层容器决定要输出哪些部分。完成后还会检查移动端、锚点、折叠交互和脚本顺序，尽量让页面接入时不需要从头调试。", "inputs": ["页面信息架构与品牌设计规范", "是否由外层系统注入公共区域", "交互需求和适配范围"], "outputs": ["可复用的UI区块与布局结构", "统一的响应式页面骨架", "明确的交互挂载位置"], "steps": [["判断容器模式", "区分完整页面和仅输出主体内容的场景，避免与外层系统重复挂载导航或页脚。"], ["组装公共区块", "按需组合顶部导航、产品入口、首屏、CTA、常见问题和页脚，保持布局一致性。"], ["完善移动体验", "处理导航折叠、字号、触控区域和内容顺序，避免组件独立可用但组合后冲突。"], ["交互与测试", "验证折叠、锚点、按钮状态及脚本加载顺序，使页面接入后仍能正常使用。"]], "guards": ["公共组件不重复注入", "重要交互拥有键盘与移动端回退方式", "组件样式不应覆盖业务页面的结构语义"], "links": ["page-standard", "feature-landing", "event-measure"]}, {"id": "page-standard", "name": "page-standard", "kind": "standard", "area": "j", "group": "技术SEO", "intro": "即使内容已经写好，独立HTML页面仍可能因为标题结构、元信息、规范链接或移动端表现不一致而需要返工。这个Skill把这些基础要求变成生成与验收时都能使用的检查标准。页面最终应具备清晰的语义结构、与可见内容一致的结构化数据，以及能够独立检查的跨端呈现。", "inputs": ["页面主题与必要的元信息", "所需内容区块和交互组件", "SEO类型与目标设备约束"], "outputs": ["语义正确的页面骨架", "搜索与社交分享元信息", "结构化数据及响应式验收清单"], "steps": [["页面骨架", "建立单一主要标题、清晰的语义区块和一致的标题层级，保持页面可读和易于抓取。"], ["搜索信息", "按页面需求设置标题、描述、规范链接及分享卡片的基本属性。"], ["结构化表达", "仅在内容确实存在时使用相应的FAQ或步骤类型结构化数据，不为获取展示效果编造内容。"], ["跨端验收", "检查小屏阅读、图片语义、资源加载及交互可达性，确保生成物可独立打开。"]], "guards": ["避免多H1、标题越级和无效规范链接", "结构化数据必须与可见内容一致", "不在演示中保留生产跟踪标识"], "links": ["layout-kit", "feature-landing", "event-measure"]}, {"id": "access-gateway", "name": "access-gateway", "kind": "auth", "area": "k", "group": "基础设施", "intro": "内容管理、批量生产和翻译都会访问需要授权的业务工具，因此每个Skill都重复处理登录会让整套流程变得脆弱。这里将会话检查、用户授权和连接验证集中到一个前置能力里，其他Skill只在确认可用后继续调用。它解决的是协作和安全边界的问题，不把任何真实凭证或连接信息带到展示页面。", "inputs": ["用户主动授权的会话", "本地可用的授权状态", "目标工具连接需求"], "outputs": ["经验证的访问上下文", "需要重新授权的明确提示", "不向页面暴露的安全会话"], "steps": [["会话检查", "在调用管理工具前确认现有授权是否有效、是否接近过期，避免无意义的失败请求。"], ["人工授权", "仅在缺失或失效时发起用户可感知的授权动作，不绕过登录确认。"], ["连接验证", "完成授权后检查当前身份和工具可达性，再交由下游Skill继续业务操作。"], ["最小暴露", "对日志与展示内容进行过滤；前端作品集只描述流程，不包含令牌、主机或接口信息。"]], "guards": ["不保存真实凭证、授权地址或密钥到演示文件", "不展示服务标识和后台连接配置", "无有效授权时停止写入类操作"], "links": ["content-manager", "batch-compose", "multilingual-flow"]}];
+const byId=Object.fromEntries(SKILLS.map(s=>[s.id,s]));
+function rr(x,y,w,h,r=8,klass='line'){return `<rect class="${klass}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}"/>`}
+function ln(x1,y1,x2,y2,klass='line'){return `<path class="${klass}" d="M${x1} ${y1} L${x2} ${y2}"/>`}
+function path(d,klass='line'){return `<path class="${klass}" d="${d}"/>`}
+function dot(x,y,r=4,klass='blue-fill blink'){return `<circle class="${klass}" cx="${x}" cy="${y}" r="${r}"/>`}
+function bars(x,y,widths,height=6,sp=17,klass='mid-fill'){return widths.map((w,i)=>rr(x,y+sp*i,w,height,2,klass)).join('')}
+function page(x,y,w,h,variant=0){const xs=[.75,.62,.84,.55];return `<g class="hover-${['a','b','c'][variant%3]}">${rr(x,y,w,h,9,'soft-fill')}${rr(x,y,w,h,9,'mid')}${rr(x+17,y+18,Math.min(w-40,w*.38),4,2,'white-fill')}${bars(x+17,y+39,xs.map(a=>Math.max(15,(w-36)*a)),4,14,'mid-fill')}${rr(x+17,y+h-30,Math.max(20,w*.27),5,2,'blue-fill')}</g>`}
+function sceneArt(kind){
+ switch(kind){
+ case 'article':return `${page(135,12,320,330,0)}${rr(173,38,235,22,4,'mid-fill')}${rr(173,90,101,76,5,'mid-fill')}${rr(292,90,116,76,5,'soft-fill')}${bars(294,106,[91,80,97,70],5,14,'mid-fill')}${rr(173,187,224,4,2,'white-fill')}${bars(173,208,[229,207,216,159],4,15,'mid-fill')}${rr(170,285,116,8,4,'blue-fill blink')}${path('M 15 203 H 104 Q 120 203 120 185 V 116 H 151','blue flow')}${dot(120,185,4)}${rr(24,151,100,61,8,'line hover-b')}${bars(39,168,[58,74],5,17,'mid-fill')}${path('M 466 69 H 567 V 220 H 481','mid flow-slow')}${dot(479,220,5,'blue-fill blink2')}`;
+ case 'manage':return `${rr(50,57,505,264,15,'soft-fill')}${rr(50,57,505,264,15,'line')}${ln(200,57,200,321)}${ln(396,57,396,321)}${bars(78,99,[90,77,102,70,92],7,30,'mid-fill')}${bars(222,101,[135,120,115,140,125],7,34,'mid-fill')}${[0,1,2,3].map(i=>rr(415,89+i*49,115,30,7,i===1?'blue':'line')).join('')}${rr(222,250,130,36,7,'line hover-a')}${path('M 107 260 H 182 V 177 H 218','blue flow')}${path('M 355 177 H 393 V 151 H 413','mid flow-slow')}${dot(200,177,4,'blue-fill blink')}${dot(414,151,3,'blue-fill blink2')}`;
+ case 'auth':return `${[155,128,98].map(r=>`<circle class="line radiate" cx="308" cy="190" r="${r}"/>`).join('')}${rr(248,159,120,102,16,'soft-fill hover-a')}${rr(248,159,120,102,16,'mid')}${path('M275 160 V140 Q275 111 308 111 Q341 111 341 140 V160','bright')}${dot(308,205,10,'blue-fill blink')}${ln(308,216,308,232,'blue')}${path('M 102 190 H 210 M 408 190 H 525','mid flow')}${[0,1,2,3].map((i)=>dot(308+Math.cos(i*Math.PI/2)*160,190+Math.sin(i*Math.PI/2)*160,4,'mid-fill blink')).join('')}`;
+ case 'batch':return `${[0,1,2,3].map(i=>`<g class="hover-${i%2?'a':'b'}">${rr(92+i*42,55+i*28,190,215,10,'soft-fill')}${rr(92+i*42,55+i*28,190,215,10,'mid')}${rr(108+i*42,75+i*28,76,8,3,'mid-fill')}${bars(108+i*42,103+i*28,[145,126,133,111],5,17,'mid-fill')}${rr(108+i*42,226+i*28,67,8,4,i===3?'blue-fill':'mid-fill')}</g>`).join('')}${path('M 0 336 H 90 V 289 H 220 V 338 H 492','blue flow')}${dot(492,338,5,'blue-fill blink')}`;
+ case 'assets':return `${[0,1,2,3,4,5].map(i=>{let x=95+(i%3)*139,y=32+Math.floor(i/3)*142;return `<g class="hover-${['a','b','c'][i%3]}">${rr(x,y,116,111,9,'soft-fill')}${rr(x,y,116,111,9,'line')}${path(`M${x+10} ${y+87} L${x+42} ${y+48} L${x+66} ${y+69} L${x+83} ${y+51} L${x+108} ${y+83}`,'mid')}${dot(x+87,y+30,7,'mid-fill')}${rr(x+15,y+96,44,4,2,'mid-fill')}</g>`}).join('')}${rr(226,170,118,114,9,'blue flow')}${path('M 287 282 V 323 H 545','blue flow')}${dot(545,323,4)}`;
+ case 'refine':return `${rr(45,50,226,257,12,'soft-fill')}${rr(329,50,226,257,12,'soft-fill')}${rr(45,50,226,257,12,'line')}${rr(329,50,226,257,12,'line')}${bars(66,80,[160,184,161,174,135,183,151,176,135],5,19,'mid-fill')}${bars(349,80,[165,177,163,169,131,181,145,179,120],5,19,'mid-fill')}${rr(348,173,169,9,3,'blue-fill blink')}${path('M 270 169 H 325','blue flow')}${path('M 301 155 L 322 169 L 301 184','blue')}${rr(355,261,94,6,3,'white-fill')}${dot(325,169,4,'blue-fill radiate')}`;
+ case 'translate':return `${[0,1,2].map((k)=>`<g class="hover-${['a','b','c'][k]}">${rr(44+k*191,58+(k%2)*19,158,237,10,'soft-fill')}${rr(44+k*191,58+(k%2)*19,158,237,10,'mid')}${bars(59+k*191,89+(k%2)*19,[96,119,92,115,77,105,119,91],5,21,k===1?'white-fill':'mid-fill')}</g>`).join('')}${path('M 210 183 H 233 M 401 183 H 424','blue flow')}${[210,400].map(x=>dot(x,183,4)).join('')}${path('M 105 338 H 504','mid flow-slow')}${dot(306,338,5,'blue-fill blink')}`;
+ case 'landing':return `${rr(100,23,408,337,13,'soft-fill')}${rr(100,23,408,337,13,'mid')}${rr(100,23,408,34,8,'mid-fill')}${dot(122,40,3,'white-fill')}${dot(134,40,3,'mid-fill')}${rr(124,82,171,9,4,'white-fill')}${bars(124,108,[217,192,176],5,15,'mid-fill')}${rr(125,169,93,25,5,'blue-fill blink')}${rr(326,80,158,121,7,'mid-fill')}${rr(124,218,116,76,7,'mid-fill')}${rr(252,218,116,76,7,'mid-fill')}${rr(380,218,105,76,7,'mid-fill')}${rr(124,313,361,19,6,'line')}${path('M 55 150 H 98 M 506 171 H 554 V 298 H 487','blue flow')}${dot(554,298,4,'blue-fill blink2')}`;
+ case 'layout':return `${rr(58,42,484,288,11,'soft-fill')}${rr(58,42,484,288,11,'mid')}${rr(58,42,484,44,10,'line')}${[0,1,2,3].map(i=>rr(260+i*60,60,39,4,2,'mid-fill')).join('')}${rr(80,111,214,162,7,'mid-fill')}${rr(314,111,204,69,7,'soft-fill')}${rr(314,111,204,69,7,'mid')}${rr(314,194,93,82,7,'mid-fill')}${rr(421,194,97,82,7,'mid-fill')}${rr(80,285,438,21,6,'blue-fill blink')}${path('M 550 76 H 572 V 273 H 519','mid flow')}${dot(520,273,4,'blue-fill blink2')}${rr(82,117,109,9,3,'white-fill')}`;
+ case 'standard':return `${rr(102,31,402,321,13,'soft-fill')}${rr(102,31,402,321,13,'mid')}${rr(102,31,402,37,7,'line')}${rr(122,91,189,12,4,'white-fill')}${rr(122,120,268,6,2,'mid-fill')}${rr(122,138,219,6,2,'mid-fill')}${rr(122,167,359,97,7,'line')}${rr(122,286,107,37,7,'mid-fill')}${rr(240,286,107,37,7,'mid-fill')}${rr(358,286,123,37,7,'mid-fill')}${path('M 110 174 H 43 V 98 H 100','blue flow')}${path('M 511 295 H 573 V 105 H 504','mid flow-slow')}${dot(502,105,5,'blue-fill blink')}`;
+ case 'analytics':return `${[74,126,178,230,282].map(y=>ln(79,y,539,y)).join('')}${[79,194,309,424,539].map(x=>ln(x,52,x,316)).join('')}${path('M 79 270 C 143 256 151 184 202 218 S 290 244 340 150 S 439 151 474 87 S 512 116 539 76','mid')}${path('M 79 270 C 143 256 151 184 202 218 S 290 244 340 150 S 439 151 474 87 S 512 116 539 76','blue pulse-path')}${dot(474,87,7,'blue-fill radiate')}${[0,1,2,3,4,5,6,7].map((i)=>rr(103+i*55,291-(i%4)*17,22,21+(i%4)*17,4,'mid-fill grow')).join('')}`;
+ default:return '';
+ }
+}
+const POSTER_WEBP={"article": "/assets/ai-suite/article-craft.webp", "batch": "/assets/ai-suite/batch-compose.webp", "manage": "/assets/ai-suite/content-manager.webp", "refine": "/assets/ai-suite/batch-refine.webp", "translate": "/assets/ai-suite/multilingual-flow.webp", "assets": "/assets/ai-suite/asset-library.webp", "landing": "/assets/ai-suite/feature-landing.webp", "analytics": "/assets/ai-suite/event-measure.webp", "layout": "/assets/ai-suite/layout-kit.webp", "standard": "/assets/ai-suite/page-standard.webp", "auth": "/assets/ai-suite/access-gateway.webp"};
+const POSTER_STATIC={"article": "/assets/ai-suite/article-craft.png", "batch": "/assets/ai-suite/batch-compose.png", "manage": "/assets/ai-suite/content-manager.png", "refine": "/assets/ai-suite/batch-refine.png", "translate": "/assets/ai-suite/multilingual-flow.png", "assets": "/assets/ai-suite/asset-library.png", "landing": "/assets/ai-suite/feature-landing.png", "analytics": "/assets/ai-suite/event-measure.png", "layout": "/assets/ai-suite/layout-kit.png", "standard": "/assets/ai-suite/page-standard.png", "auth": "/assets/ai-suite/access-gateway.png"};
+function sceneHTML(kind){return `<div class="scene" aria-hidden="true"><div class="scene-camera"><picture><source media="(prefers-reduced-motion: reduce)" srcset="${POSTER_STATIC[kind]}"><img src="${POSTER_WEBP[kind]}" alt="" decoding="async" loading="lazy" width="900" height="600"></picture></div></div>`}
+function reticles(){return '<span class="retic tl"></span><span class="retic tr"></span><span class="retic bl"></span><span class="retic br"></span>'}
+function esc(v){return String(v).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+
+const bento=document.querySelector('#bento');
+const baseSizes=[{w:7,h:4},{w:5,h:3},{w:2,h:2},{w:3,h:3},{w:3,h:3},{w:4,h:3},{w:2,h:2},{w:5,h:4},{w:4,h:4},{w:3,h:3},{w:3,h:2},{w:12,h:4}];
+const siteMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+let activeId=null, timer=null, resizeTimer=null, motionToken=0;
+function list(items,cls){return `<ul class="${cls}">${items.map(v=>`<li>${esc(v)}</li>`).join('')}</ul>`}
+function renderReveal(s){
+ const steps=s.steps.map(([title,body],idx)=>`<li class="step${idx===0?' current':''}"><span class="step-index">${String(idx+1).padStart(2,'0')}</span><div><h3>${esc(title)}</h3><p>${esc(body)}</p></div></li>`).join('');
+ const mini=(label,items)=>`<div class="io-card"><div class="io-label">${label}</div>${list(items,'io-list')}</div>`;
+ return `<div class="reveal-top"><div><div class="reveal-titleline"><h3 class="reveal-title">${esc(s.name)}</h3><button class="close-tile" type="button" data-close aria-label="收起${esc(s.name)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><p class="story">${esc(s.intro)}</p></div><div class="io-pair">${mini('Input / 输入',s.inputs)}${mini('Output / 输出',s.outputs)}</div></div><div class="reveal-bottom"><section class="panel"><h4 class="panel-label">Workflow / 执行链路</h4><ol class="steps">${steps}</ol></section><div class="panel-side"><section class="panel"><h4 class="panel-label">Checks / 校验边界</h4>${list(s.guards,'guard-list')}</section><section class="panel"><h4 class="panel-label">Related / 协同</h4><div class="related-wrap">${s.links.filter(id=>byId[id]).map(id=>`<button type="button" class="related-button" data-switch="${id}">${esc(byId[id].name)} ↗</button>`).join('')}</div></section></div></div>`;
+}
+function render(){bento.innerHTML=SKILLS.map((s,i)=>`<article class="tile" id="${s.id}" data-id="${s.id}" data-area="${s.area}" data-index="${i}"><button type="button" class="tile-trigger" data-open="${s.id}" aria-expanded="false" aria-label="展开 ${esc(s.name)}">${sceneHTML(s.kind)}<h2 class="title">${esc(s.name)}<span class="zh">${esc(s.group)}</span></h2></button><div class="tile-reveal"></div></article>`).join('')}
+const tiles=()=>[...bento.querySelectorAll('.tile')];
+function bounds(){return new Map(tiles().map(el=>[el.dataset.id,el.getBoundingClientRect()]))}
+function env(){const style=getComputedStyle(bento);return {columns:style.gridTemplateColumns.split(' ').filter(Boolean).length,row:parseFloat(style.gridAutoRows),gap:parseFloat(style.rowGap)}}
+function sizeAt(index,columns){if(window.innerWidth<=1200)return columns===1?{w:1,h:1}:(index%5===0?{w:2,h:2}:{w:1,h:1});return baseSizes[index]}
+function requiredSpan(tile,{row,gap}){
+ // Measure an unconstrained card at precisely the grid's final width.
+ const clone=tile.cloneNode(true); clone.classList.add('is-open');
+ clone.style.cssText=`position:absolute!important;inset:auto!important;left:-99999px!important;top:0!important;width:${bento.clientWidth}px!important;height:max-content!important;min-height:0!important;display:grid!important;grid-area:auto!important;visibility:hidden!important;pointer-events:none!important;animation:none!important;transform:none!important`;
+ document.body.appendChild(clone);
+ const needed=Math.ceil(clone.getBoundingClientRect().height)+8;
+ clone.remove();
+ return Math.max(4,Math.ceil((needed+gap)/(row+gap)));
+}
+function packedLayout(){
+ const e=env(), cols=e.columns;
+ const grid=[]; const mark=(y,x,w,h)=>{for(let r=y;r<y+h;r++){if(!grid[r])grid[r]=Array(cols).fill(false);for(let c=x;c<x+w;c++)grid[r][c]=true}};
+ const fits=(y,x,w,h)=>{if(x+w>cols)return false;for(let r=y;r<y+h;r++)for(let c=x;c<x+w;c++)if(grid[r]?.[c])return false;return true};
+ const selected=bento.querySelector('.tile.is-open');const openSpan=selected?requiredSpan(selected,e):0;
+ let lower=0,afterOpen=false;let maxBottom=0;
+ for(let i=0;i<SKILLS.length;i++){
+  const s=SKILLS[i],el=document.getElementById(s.id);const opened=s.id===activeId;
+  const {w,h}=opened?{w:cols,h:openSpan}:sizeAt(i,cols);
+  let y=afterOpen?lower:0, x=0;
+  // The expanded item begins after every preceding tile; later cards remain strictly below it.
+  if(opened)y=maxBottom;
+  else{outer:for(;y<2000;y++){for(x=0;x<=cols-w;x++){if(fits(y,x,w,h))break outer}}}
+  if(opened)x=0;
+  mark(y,x,w,h);maxBottom=Math.max(maxBottom,y+h);
+  el.style.gridArea=`${y+1} / ${x+1} / span ${h} / span ${w}`;
+  if(opened){afterOpen=true;lower=y+h;}
+ }
+}
+function clearLayout(){for(const el of tiles())el.style.removeProperty('grid-area')}
+function animateReflow(before){
+ if(siteMotion.matches)return;
+ for(const el of tiles()){
+  const f=before.get(el.dataset.id),t=el.getBoundingClientRect();if(!f)continue;
+  const dx=f.left-t.left,dy=f.top-t.top,sx=f.width/t.width,sy=f.height/t.height;
+  if(Math.abs(dx)<1&&Math.abs(dy)<1&&Math.abs(1-sx)<.002&&Math.abs(1-sy)<.002)continue;
+  el.getAnimations().filter(a=>a.id==='tile-reflow').forEach(a=>a.cancel());
+  const expanding=el.classList.contains('is-open');
+  // Large cards animate translation without scaling freshly revealed typography.
+  const startTransform=expanding?`translate3d(${dx}px,${dy}px,0)`:`translate3d(${dx}px,${dy}px,0) scale(${sx},${sy})`;
+  const oldShape=`inset(0px ${Math.max(0,t.width-f.width)}px ${Math.max(0,t.height-f.height)}px 0px round 17px)`;
+  const frames=expanding
+     ? [{transform:startTransform,clipPath:oldShape,transformOrigin:'top left'},{transform:'translate3d(0,0,0)',clipPath:'inset(0px 0px 0px 0px round 17px)',transformOrigin:'top left'}]
+     : [{transform:startTransform,transformOrigin:'top left'},{transform:'translate3d(0,0,0) scale(1)',transformOrigin:'top left'}];
+  const a=el.animate(frames,{duration:700,easing:'cubic-bezier(.22,1,.36,1)'});a.id='tile-reflow';
+ }
+}
+function startCycle(){clearInterval(timer);if(!activeId||siteMotion.matches)return;let idx=0;timer=setInterval(()=>{if(document.visibilityState==='hidden')return;const steps=bento.querySelector('.tile.is-open .steps');if(!steps)return;const nodes=steps.querySelectorAll('.step');idx=(idx+1)%nodes.length;nodes.forEach((el,i)=>el.classList.toggle('current',i===idx))},2700)}
+function updateOpen(id){
+ if(id&&!byId[id])return;
+ const previous=activeId;
+ if(previous===id)id=null;
+ const fixedScroll=window.scrollY;const first=bounds();
+ if(previous){const prev=document.getElementById(previous);prev.classList.remove('is-open');prev.querySelector('.tile-trigger').setAttribute('aria-expanded','false');prev.querySelector('.tile-reveal').innerHTML=''}
+ activeId=id;
+ if(id){const tile=document.getElementById(id);tile.querySelector('.tile-reveal').innerHTML=renderReveal(byId[id]);tile.classList.add('is-open');tile.querySelector('.tile-trigger').setAttribute('aria-expanded','true');packedLayout();}
+ else clearLayout();
+ if(Math.abs(window.scrollY-fixedScroll)>1)window.scrollTo(0,fixedScroll);
+ animateReflow(first);startCycle();
+ const token=++motionToken;
+ if(id){setTimeout(()=>{if(token!==motionToken)return;const el=document.getElementById(id);const rect=el.getBoundingClientRect();if(rect.top<12||rect.top>innerHeight*.58)el.scrollIntoView({behavior:siteMotion.matches?'instant':'smooth',block:'start'});},380)}
+ else if(previous){const previousTile=document.getElementById(previous);previousTile.querySelector('.tile-trigger').focus({preventScroll:true})}
+}
+bento.addEventListener('click',event=>{
+ const close=event.target.closest('[data-close]');if(close){updateOpen(null);return}
+ const switcher=event.target.closest('[data-switch]');if(switcher){updateOpen(switcher.dataset.switch);return}
+ const trigger=event.target.closest('[data-open]');if(trigger)updateOpen(trigger.dataset.open)
+});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&activeId){event.preventDefault();updateOpen(null)}});
+window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(activeId)packedLayout()},150)});
+render();
+</script>
+<script>
+(()=>{
+  const stage=document.getElementById('architecture');
+  const shell=document.getElementById('architectureShell');
+  const gallery=document.getElementById('skills');
+  const flow=document.getElementById('archFlow');
+  const svg=document.getElementById('archWires');
+  const units=[...flow.querySelectorAll('.arch-unit')];
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)');
+  const NS='http://www.w3.org/2000/svg';
+  const links=[];
+  let visible=true,phase=0,phaseStart=performance.now(),lastFrame=0,scrollQueued=false;
+  const clamp=(n,a=0,b=1)=>Math.max(a,Math.min(b,n));
+  // Straight connectors only: a horizontal path for wide layouts and two 90-degree segments on mobile.
+  function rebuildWires(){
+    while(svg.firstChild)svg.removeChild(svg.firstChild);links.length=0;
+    const fr=flow.getBoundingClientRect();svg.setAttribute('viewBox',`0 0 ${fr.width} ${fr.height}`);
+    for(let i=0;i<units.length-1;i++){
+      const a=units[i].getBoundingClientRect(),b=units[i+1].getBoundingClientRect();
+      const row=Math.abs(a.top-b.top)<40;
+      let d;
+      if(row){const sx=a.right-fr.left, sy=(a.top+a.bottom)/2-fr.top, ex=b.left-fr.left,ey=(b.top+b.bottom)/2-fr.top;
+        d=`M ${sx} ${sy} H ${ex}`;
+      }else{
+        const sx=(a.left+a.right)/2-fr.left,sy=a.bottom-fr.top,ex=(b.left+b.right)/2-fr.left,ey=b.top-fr.top;
+        const mid=sy+(ey-sy)/2;
+        d=`M ${sx} ${sy} V ${mid} H ${ex} V ${ey}`;
+      }
+      const line=document.createElementNS(NS,'path');line.setAttribute('d',d);line.setAttribute('class','route-line');svg.appendChild(line);
+      const dot=document.createElementNS(NS,'circle');dot.setAttribute('r','4');dot.setAttribute('class','route-cursor');svg.appendChild(dot);
+      links.push({line,dot,len:line.getTotalLength()});
+    }
+  }
+  function paintProgress(){
+    const s=stage.getBoundingClientRect(),g=gallery.getBoundingClientRect();
+    // The hero makes room for the entering skill matrix in normal document flow.
+    const hand=clamp((-s.top)/(s.height*.72));
+    const enter=clamp((innerHeight-g.top)/(innerHeight*.75));
+    if(!reduce.matches){
+      shell.style.transform=`translate3d(0,${(-hand*16).toFixed(2)}px,0) scale(${(1-hand*.045).toFixed(4)})`;
+      shell.style.opacity=String(1-hand*.24);
+      gallery.style.transform=`translate3d(0,${((1-enter)*20).toFixed(2)}px,0) scale(${(.990+enter*.010).toFixed(4)})`;
+      gallery.style.opacity=String(.80+enter*.20);
+    }else{shell.style.transform='';shell.style.opacity='';gallery.style.transform='';gallery.style.opacity=''}
+  }
+  function onScroll(){if(scrollQueued)return;scrollQueued=true;requestAnimationFrame(()=>{scrollQueued=false;paintProgress()})}
+  function frame(time){
+    if(visible&&!reduce.matches&&document.visibilityState==='visible'&&time-lastFrame>32){
+      lastFrame=time;
+      const elapsed=(time-phaseStart)%(4*3300);const i=Math.floor(elapsed/3300),p=(elapsed%3300)/3300;
+      if(phase!==i){phase=i;units.forEach((u,j)=>u.classList.toggle('is-focused',j===i))}
+      for(let j=0;j<links.length;j++){
+        const {line,dot,len}=links[j];
+        const local=(p*.84+.08);
+        const pt=line.getPointAtLength(len*local);
+        dot.setAttribute('cx',pt.x);dot.setAttribute('cy',pt.y);
+        dot.style.opacity=j===i?String(Math.min(.96,p*12,(1-p)*12)):'0';
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+  const observer=new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;if(visible)phaseStart=performance.now()-phase*3300},{rootMargin:'60px'});
+  observer.observe(stage);
+  const doResize=()=>{rebuildWires();paintProgress()};
+  if('ResizeObserver' in window){const ro=new ResizeObserver(doResize);ro.observe(flow)}
+  else window.addEventListener('resize',doResize);
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',onScroll,{passive:true});
+  units.forEach((u,j)=>u.classList.toggle('is-focused',j===0));
+  rebuildWires();paintProgress();requestAnimationFrame(frame);
+})();
+</script>
+<script src="/assets/widgets/ai-suite.js?v=1"></script></body></html>

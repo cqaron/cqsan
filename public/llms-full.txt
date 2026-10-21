@@ -1,0 +1,34 @@
+# Quincy / 陈祺 — Portfolio
+
+> Product work, development tools, AI workflows and independently written multilingual articles.
+
+## Site
+- [Home](https://www.cqsan.cn/)
+- [About](https://www.cqsan.cn/#/about)
+- [All work](https://www.cqsan.cn/#/all-work)
+
+## Projects
+- [Agent Skills 与工作流 / Agent Skills & Workflows](https://www.cqsan.cn/#/work/agent-skills): Agent architecture, 11 skills and n8n workflows for content and site operations.
+- [需求上线-链接下载 / Link Download](https://www.cqsan.cn/#/work/link-download): Research, PRD and launch follow-up for a same-page link parsing, preview and download flow.
+- [原型设计-落地页 / TG Landing Redesign](https://tgvideodownloader.com/): TG Landing Redesign
+- [BOSS 直聘投递助手 MCP / BOSS Job Assistant MCP](https://www.cqsan.cn/#/work/boss-assistant): A BOSS job assistant workflow covering role reading, evidence matching, authorised sending and delivery verification.
+- [英文 / WPS PDF指南 / English / WPS PDF Guide](https://www.wps.com/blog/what-is-an-affidavit-prepare-and-sign-the-pdf-in-wps/): English / WPS PDF Guide
+- [英文 / 界面细节与体验 / English / Small Interface Choices](https://www.fontmirror.com/en/why-small-interface-choices-matter-in-telegram-media-workflows/): English / Small Interface Choices
+- [西语 / 离线访问的价值 / Spanish / Offline Access Matters](https://tynmagazine.com/por-que-el-acceso-offline-sigue-importando-en-las-apps-de-mensajeria/): Spanish / Offline Access Matters
+- [中文 / Coze 短视频流水线 / Chinese / Short-video Pipeline](https://mp.weixin.qq.com/s/l-Q0fXIh2362--ykXC3Zgw): Chinese / Short-video Pipeline
+- [中文 / AI 政策拆解指南 / Chinese / AI Policy Teardown](https://mp.weixin.qq.com/s/Gjdv-KhOEx_sgvnQb0gMDg): Chinese / AI Policy Teardown
+
+## Machine-readable resources
+- [Project index](https://www.cqsan.cn/site-index.json)
+- [Portfolio details](https://www.cqsan.cn/llms-full.txt)
+
+The site uses hash navigation. Fragment links open the corresponding client-side view; they are not separate server documents.
+
+## Link Download
+The homepage already had link input and media parsing. The work added preview confirmation, a 10-second download preparation state, completion feedback and retry. The web quota is 10 downloads per 24 hours and 50 MB per file. Research, PRD, prototype, quota and exception rules, event definitions and launch follow-up are presented in the portfolio.
+
+## BOSS Job Assistant MCP
+The workflow reads a role, matches confirmed personal evidence, drafts a greeting, obtains authorisation, sends through a CDP script and verifies greeting and résumé-image delivery separately. A Python and SQLite ledger records roles and applications.
+
+## Agent Skills
+The AI suite presents architecture, 11 skills and an n8n site-audit workflow. Skills include article creation, batch composition, content management, refinement, multilingual flow, asset library, landing pages, event measurement, layouts, page standards and access gateway.

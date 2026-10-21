@@ -1,0 +1,55 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Local state, credentials and generated packages
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+.cos-mcp/
+.cursor/
+.workbuddy/
+.ref/
+transfer/
+release/
+review/
+__pycache__/
+*.pyc
+*.tsbuildinfo
+references/fusion-pixel-font.zip
+references/fusion-pixel-font/fusion-pixel-12px-monospaced-ja.ttf
+references/fusion-pixel-font/fusion-pixel-12px-monospaced-ko.ttf
+references/fusion-pixel-font/fusion-pixel-12px-monospaced-zh_hant.ttf
+references/fusion-pixel-font/fusion-pixel-12px-monospaced-zh_hk.ttf
+references/fusion-pixel-font/fusion-pixel-12px-monospaced-zh_tw.ttf
+# Early unused visual experiments
+cosmic-hero/
+preloader-v2/
+shiba/
+vibe_images/
+tools/cards/out/

@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI客服Agent · 订单处理回放</title>
+<link rel="stylesheet" href="agent-replay.css?v=7">
+<script src="agent-replay.js?v=7" defer></script>
+<link rel="stylesheet" href="replay-chrome.css?v=2"></head>
+<body>
+<main class="replay" aria-label="AI Agent case replay">
+  <header class="replay-head"><div><h1 id="replay-title"></h1></div><span id="step-count" class="step-count"></span></header>
+  <div class="replay-body">
+    <nav class="steps" aria-label="Replay steps"><div class="step-track" aria-hidden="true"><i id="step-progress"></i></div><ol id="steps"></ol></nav>
+    <section class="detail" aria-labelledby="detail-title"><div class="rail" aria-hidden="true"><svg class="rail-svg" viewBox="0 0 320 36" preserveAspectRatio="none"><path id="rail-path" d="M28 18 H292"/></svg><span data-node="0">01</span><span data-node="1">02</span><span data-node="2">03</span></div><div class="cam" id="cam"><div class="detail-top"><span id="status" class="status"></span></div><h2 id="detail-title"></h2><div id="detail-content"></div></div></section>
+  </div>
+  <div class="transport"><button id="previous" class="glass-arrow" type="button" aria-label="上一步"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button><button id="next" class="glass-arrow" type="button" aria-label="下一步"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button></div>
+  <footer class="metrics"><div><span id="metric-pass"></span><strong>95.5% → 100%</strong></div><div><span id="metric-mixed"></span><strong>100% → 0%</strong></div><div><span id="metric-review"></span><strong>39 / 40</strong></div></footer>
+</main>
+</body>
+</html>

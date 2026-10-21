@@ -1,0 +1,113 @@
+@font-face{font-family:'JetBrains Mono';src:url('/fonts/JetBrainsMono-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'JetBrains Mono';src:url('/fonts/JetBrainsMono-Bold.woff2') format('woff2');font-weight:600 800;font-display:swap}
+@font-face{font-family:Inter;src:url('/fonts/Inter-Latin.woff2') format('woff2');font-display:swap}
+:root{--blue:#2e2ee6;--paper:#fff;--mono:'JetBrains Mono',ui-monospace,monospace;--text:Inter,system-ui,-apple-system,'Microsoft YaHei',sans-serif}
+body{background:radial-gradient(circle,#e5e5eb .65px,transparent .85px) 0 0/22px 22px,#fff;font-family:var(--text)}
+.architecture-stage,.gallery,.workflow-section{width:min(1360px,calc(100% - 80px));margin-left:auto;margin-right:auto}
+.architecture-stage{height:auto;margin-top:0}
+.architecture-shell{padding:0 0 28px;border:0;border-radius:0;box-shadow:none;background:transparent;overflow:visible;gap:24px;will-change:auto}
+.architecture-shell::before{display:none}
+.arch-heading{grid-template-columns:1fr 1fr;align-items:end}
+.arch-heading h1{font-family:var(--mono);font-size:clamp(24px,3vw,36px);font-weight:600;letter-spacing:-.045em}
+.arch-heading p{max-width:48ch;line-height:1.8;color:#73737d}
+.arch-flow{gap:18px;margin:0;align-items:stretch}
+.arch-unit,.arch-frame,.arch-card,.tile,.tile-trigger,.tile-reveal,.panel,.io-card{border-radius:12px!important}
+.arch-unit h2,.reveal-title,.suite-section-title,.workflow-kicker,.workflow-position{font-family:var(--mono)}
+.arch-unit h2 small{font-family:var(--text)}
+.arch-unit{min-height:205px}
+.arch-visual svg{--blue:#2e2ee6}
+.arch-blue,.arch-wires path.route-line{stroke:var(--blue)!important}.arch-blue-fill,.route-cursor{fill:var(--blue)!important}
+.gallery{padding:20px 0 0;will-change:auto}
+.suite-section-title{font-size:clamp(24px,3vw,36px);font-weight:600;letter-spacing:-.045em;margin:28px 0 24px;color:#161619}
+.bento{gap:16px;grid-auto-rows:88px}
+.tile{border:1px solid #34373e;will-change:auto;box-shadow:none}
+.tile .tile-trigger::after{display:none!important}
+.tile:not(.is-open) .title{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;overflow:hidden!important;clip-path:inset(50%)}
+.tile .scene img{object-fit:contain!important;background:#0a0a0a}
+.tile:hover .scene-camera{transform:none!important}
+.tile.is-open .tile-trigger{border:0!important}
+.tile.is-open .title{font-family:var(--mono);font-size:clamp(22px,3vw,32px)!important}
+.tile.is-open .tile-trigger::after{display:block!important;height:70%!important}
+.tile.is-open .tile-reveal{background:#fff;color:#252529}
+.reveal-title{font-size:clamp(22px,3vw,34px);letter-spacing:-.04em}
+.story,.step p,.io-list,.guard-list{font-family:var(--text);line-height:1.85}
+.step-index,.panel-label,.io-label,.related-button{font-family:var(--mono)}
+.step.current{border-color:#dedefa;background:#f8f8ff}
+.close-tile,.related-button{border-radius:12px}
+.workflow-section{padding:36px 0 80px}
+.workflow-card{padding:32px;border:1px solid #e5e5eb;border-radius:12px;background:#ffffffde;box-shadow:inset 0 1px 0 #fff;overflow:hidden}
+.workflow-kicker{font-size:12px;color:var(--blue)}
+.workflow-intro h3{font-size:clamp(24px,3vw,34px);margin:12px 0;font-weight:600;letter-spacing:-.04em}
+.workflow-intro p{font-size:14px;line-height:1.8;color:#777780;margin:0;max-width:65ch}
+.workflow-route{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:24px;margin:36px 0;position:relative}
+.workflow-node{min-width:0;position:relative;text-align:left;background:#fff;border:1px solid #e5e5eb;border-radius:12px;padding:18px 14px;cursor:pointer;transition:border-color .5s,background .5s}
+.workflow-node:not(:last-child)::after{content:'';position:absolute;left:100%;top:50%;width:25px;height:1px;background:#c9c9da}
+.workflow-node[aria-selected=true]{border-color:#bfbffa;background:#f7f7ff}
+.workflow-node[aria-selected=true]::after{background:var(--blue)}
+.workflow-node strong{display:block;font:600 24px/1.4 var(--mono);color:var(--blue);margin-bottom:12px}
+.workflow-node span{font-size:12px;white-space:nowrap;color:#51515d}
+.workflow-reading{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:26px 0;border-top:1px solid #ededf2;min-height:168px}
+.workflow-position{color:#85858e;font-size:11px}
+.workflow-title{font-size:18px;margin:9px 0}
+.workflow-copy{font-size:14px;color:#777780;line-height:1.8;margin:0;max-width:75ch}
+.workflow-reading.reading-enter>div:first-child{animation:workflow-settle .55s ease both}
+.workflow-controls{display:flex;gap:10px;flex:none}
+.workflow-controls button{width:40px;height:40px;border-radius:50%;border:1px solid #eeeeF5;background:linear-gradient(135deg,#fff,#f3f3ff77);color:var(--blue);cursor:pointer;box-shadow:0 5px 16px #20203409,inset 0 1px 0 #fff}
+.workflow-controls svg{width:18px;fill:none;stroke:currentColor;stroke-width:1.5}
+.workflow-metrics{display:flex;gap:36px;border-top:1px solid #ededf2;padding-top:24px;flex-wrap:wrap}
+.workflow-metrics span{font-size:12px;color:#888890}.workflow-metrics b{font:500 22px var(--mono);color:#252529;margin-right:10px}
+@keyframes workflow-settle{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media(max-width:1050px){.architecture-stage,.gallery,.workflow-section{width:calc(100% - 44px)}.arch-heading{grid-template-columns:1fr}.workflow-route{gap:14px}.workflow-node{padding:14px 8px}.workflow-node:not(:last-child)::after{width:15px}}
+@media(max-width:700px){.architecture-stage,.gallery,.workflow-section{width:calc(100% - 32px)}.architecture-shell{padding:0 0 12px}.arch-flow{gap:12px}.arch-unit{min-height:170px}.workflow-card{padding:22px 18px}.workflow-route{grid-template-columns:repeat(3,1fr);gap:14px;margin:26px 0}.workflow-node:nth-child(3)::after{display:none}.workflow-reading{align-items:flex-start;flex-direction:column;min-height:230px}.workflow-controls{align-self:flex-end}.workflow-metrics{gap:16px}.workflow-metrics b{font-size:18px}.bento{gap:9px;grid-auto-rows:102px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+.suite-paused *, .suite-paused *::before, .suite-paused *::after { animation-play-state:paused!important; }
+
+.architecture-shell,.gallery { transform:none!important; opacity:1!important; }
+
+/* The baked poster already carries its title; avoid a second overlay on expansion. */
+.tile .tile-trigger .title { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; overflow:hidden!important; clip-path:inset(50%)!important; }
+.tile.is-open .tile-trigger::after { display:none!important; }
+.workflow-node[aria-selected=true]:not(:last-child)::before { content:''; position:absolute; left:calc(100% + 2px); top:calc(50% - 2px); width:4px; height:4px; border-radius:50%; background:var(--blue); animation:workflow-signal 2s ease-in-out infinite; }
+@keyframes workflow-signal { 0% { transform:translateX(0);opacity:0; } 25%,70% {opacity:1} 100% {transform:translateX(18px);opacity:0} }
+
+.workflow-tile { border-radius:12px; overflow:hidden; }
+.workflow-cover { position:relative; display:block; width:100%; padding:0; border:1px solid #34373e; border-radius:12px; overflow:hidden; background:#0a0a0a; cursor:pointer; }
+.workflow-cover picture,.workflow-cover img { display:block; width:100%; height:auto; }
+.workflow-cover-action { position:absolute; right:26px; bottom:22px; color:#eceef2; font:12px var(--mono); padding:8px 12px; border:1px solid #34373e; border-radius:999px; background:#0a0a0ae8; }
+.workflow-expand { overflow:hidden; }
+.workflow-expand .workflow-card { margin-top:16px; }
+@media(max-width:700px) { .workflow-cover picture { height:220px; } .workflow-cover img { width:100%; height:100%; object-fit:cover; object-position:left center; } .workflow-cover-action { right:16px; bottom:16px; } }
+
+@media(min-width:701px) { .workflow-cover-action { top:22px; bottom:auto; } }
+
+.workflow-replay { display:block; width:100%; height:680px; border:0; border-radius:12px; margin-top:16px; background:#0a0a0a; }
+@media(max-width:700px) { .workflow-replay { height:580px; } }
+
+.workflow-cover-action { width:40px; height:40px; padding:0; display:grid; place-items:center; border-radius:50%; }
+.workflow-cover-action svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+/* Use the poster's 3:2 shape rather than narrow, uneven masonry on touch layouts. */
+.tile .scene{inset:0!important}.tile .scene-camera{animation:none!important;transform:none!important;will-change:auto}.tile .scene picture,.tile .scene img{display:block;width:100%;height:100%}
+@media(max-width:1200px){
+ .bento{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:calc((100vw - 58px)/3);gap:14px}
+ .tile{grid-area:auto;min-width:0}
+ .tile:last-child:not(.is-open){grid-column:1/-1;grid-row:span 2}
+ .tile.is-open{grid-template-columns:1fr;grid-template-rows:auto auto auto}
+ .tile.is-open .tile-trigger{grid-column:1;grid-row:1;margin:14px;width:calc(100% - 28px);height:auto;min-height:0;aspect-ratio:3/2}
+ .tile.is-open .reveal-top{grid-column:1;grid-row:2;padding:16px 24px 26px}
+ .tile.is-open .reveal-bottom{grid-column:1;grid-row:3;grid-template-columns:1fr;padding:0 14px 14px}
+}
+@media(min-width:1051px) and (max-width:1200px){.bento{grid-auto-rows:calc((100vw - 94px)/3)}}
+@media(min-width:601px) and (max-width:700px){.bento{grid-auto-rows:calc((100vw - 46px)/3)}}
+@media(max-width:600px){
+ .bento{grid-template-columns:minmax(0,1fr);grid-auto-rows:calc((100vw - 32px)*2/3);gap:12px}
+ .tile:last-child:not(.is-open){grid-column:auto;grid-row:auto}
+ .tile.is-open .tile-trigger{margin:10px;width:calc(100% - 20px)}
+ .tile.is-open .reveal-top{padding:12px 18px 22px}
+ .tile.is-open .io-pair{grid-template-columns:1fr}
+ .tile.is-open .io-card{min-height:0}
+}
+.arch-zh{font:500 .55em var(--text);color:#73737d;margin-left:10px;letter-spacing:0}.workflow-collapse{display:grid;place-items:center;margin:20px auto 8px;width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid #e5e5eb;color:#2e2ee6;cursor:pointer}.workflow-collapse svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6}
+@media(min-width:601px) and (max-width:1200px){.tile:nth-child(5n+1):not(.is-open){grid-column:1/-1;grid-row:span 2}.tile:last-child:not(.is-open):not(:nth-child(5n+1)){grid-column:auto;grid-row:auto}}
+/* Alpha artwork gets its backing from the container, not the bitmap. */
+.tile .scene img{background:transparent!important}.workflow-cover{background:#0a0a0a}

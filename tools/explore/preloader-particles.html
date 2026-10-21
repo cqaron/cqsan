@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preloader — 100 粒子消散原型 v2</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: #000;
+    font-family: 'Inter Variable', 'Inter', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    overflow: hidden;
+  }
+
+  /* 模拟 hero 底层（消散后淡出黑幕时可见） */
+  #hero-bg {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: clamp(40px, 8vw, 110px); font-weight: 700;
+    letter-spacing: -0.03em; opacity: 0.9;
+  }
+
+  /* preloader：与线上 .preloader 一致 */
+  #preloader {
+    position: fixed; inset: 0;
+    background: #000; z-index: 10;
+    transition: opacity 0.5s ease;
+    overflow: hidden;
+  }
+  #preloader.gone { opacity: 0; pointer-events: none; }
+  #num {
+    position: absolute;
+    left: 27%; top: 0;
+    color: #fff;
+    font-size: clamp(72px, 9vw, 120px);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+    will-change: transform;
+  }
+  #num.falling { animation: fall 1.5s linear forwards; }
+  @keyframes fall {
+    from { transform: translateY(14vh); }
+    to   { transform: translateY(76vh); }
+  }
+  #dust { position: fixed; inset: 0; z-index: 11; pointer-events: none; }
+
+  #bar {
+    position: fixed; left: 16px; bottom: 14px; z-index: 20;
+    display: flex; gap: 8px; font-size: 12px;
+    font-family: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+  #bar button {
+    background: transparent; color: #666;
+    border: 1px solid #333; border-radius: 4px;
+    padding: 5px 10px; cursor: pointer; font: inherit;
+  }
+  #bar button:hover { color: #fff; border-color: #666; }
+  #info { color: #444; align-self: center; }
+</style>
+</head>
+<body>
+  <div id="hero-bg">Hello,</div>
+  <div id="preloader"><span id="num">0</span></div>
+  <canvas id="dust"></canvas>
+
+  <div id="bar">
+    <button id="btn-full">完整播放</button>
+    <button id="btn-dust">只看 100 消散</button>
+    <span id="info"></span>
+  </div>
+
+<script>
+(() => {
+  const pre  = document.getElementById('preloader');
+  const num  = document.getElementById('num');
+  const cv   = document.getElementById('dust');
+  const ctx  = cv.getContext('2d');
+  const info = document.getElementById('info');
+  const DPR  = Math.min(devicePixelRatio || 1, 2);
+  const FALL_END = 76; // vh，与线上落点一致
+
+  let raf = 0;
+
+  function sizeCanvas() {
+    cv.width  = innerWidth  * DPR;
+    cv.height = innerHeight * DPR;
+    cv.style.width  = innerWidth + 'px';
+    cv.style.height = innerHeight + 'px';
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  sizeCanvas();
+  addEventListener('resize', sizeCanvas);
+
+  /* ---------- 粒子生成：高密度采样字形像素 ----------
+     要求：t=0 帧粒子原位拼出的图像 ≈ 文字本身，所以
+     每个粒子负责覆盖 stride×stride 的方块，首帧不缩不小、
+     全不透明，DOM 文字同帧隐藏 —— 视觉上零跳变。 */
+  function makeParticles() {
+    num.textContent = '100';
+    num.style.animation = 'none';
+    num.style.transform = `translateY(${FALL_END}vh)`;
+    const box = num.getBoundingClientRect();
+
+    let S = 1.6;                       // CSS px 采样间距
+    const build = (stride) => {
+      const off = document.createElement('canvas');
+      const sw = Math.max(1, Math.round(stride * DPR));
+      off.width  = Math.max(1, Math.ceil(box.width  * DPR));
+      off.height = Math.max(1, Math.ceil(box.height * DPR));
+      const o = off.getContext('2d', { willReadFrequently: true });
+      o.scale(DPR, DPR);
+      const cs = getComputedStyle(num);
+      o.fillStyle = '#fff';
+      o.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+      if ('letterSpacing' in o) o.letterSpacing = cs.letterSpacing;
+      o.textBaseline = 'middle';
+      o.fillText('100', 0, box.height / 2);
+      const d = o.getImageData(0, 0, off.width, off.height).data;
+      const W = off.width, H = off.height;
+      const aAt = (x, y) => (x < 0 || y < 0 || x >= W || y >= H)
+        ? 0 : d[(y * W + x) * 4 + 3];
+
+      const out = [];
+      for (let y = 0; y < H; y += sw) {
+        for (let x = 0; x < W; x += sw) {
+          if (aAt(x, y) < 128) continue;
+          // 边缘检测：四邻有透明 = 字形轮廓像素，起爆更早、更活跃
+          const edge = aAt(x - sw, y) < 128 || aAt(x + sw, y) < 128
+            || aAt(x, y - sw) < 128 || aAt(x, y + sw) < 128;
+          const px = box.left + x / DPR;
+          const py = box.top + y / DPR;
+          out.push({ px, py, edge });
+        }
+      }
+      return out;
+    };
+
+    let samples = build(S);
+    if (samples.length > 2600) { S *= 1.5; samples = build(S); } // 保底性能
+
+    const cx = box.left + box.width / 2;
+    const ps = samples.map(({ px, py, edge }) => {
+      const r = Math.random;
+      const tint = r() < 0.035;                              // 少量克莱因蓝碎屑
+      const g = 205 + (r() * 50) | 0;
+      const ang = Math.atan2(py - (box.top + box.height / 2), px - cx);
+      return {
+        x0: px, y0: py,
+        cell: S * 1.35,                                       // 覆盖尺寸（首帧实心）
+        c: tint ? 'rgb(72,74,238)' : `rgb(${g},${g},${g})`,
+        edge,
+        // 错峰：轮廓像素先散，内部晚一点，像纸从边缘烧起
+        delay: (edge ? r() * 0.12 : 0.05 + Math.pow(r(), 1.4) * 0.3),
+        life: (edge ? 0.75 : 0.7) + r() * 0.65,               // 寿命加长，远飞的粒子来得及走完
+        // 初速：更大的抛射 + 主导上飘；边缘粒子更有力
+        vx: Math.cos(ang) * (8 + r() * 22) * (edge ? 1.8 : 0.8) + (r() - 0.5) * 26,
+        vy: -(40 + r() * 95) * (edge ? 1.35 : 1),
+        // 阻尼速率：位移 = v0*(1-e^-kt)/k，越飞越慢 → 永无急停感
+        // k 调小 = 减速更缓 = 飘得更远
+        k: 0.9 + r() * 1.3,
+        // 湍流：两条不同频率的正弦扰动，振幅随时间长大 → 烟缕感
+        w1: 0.7 + r() * 1.4, p1: r() * 6.28, a1: (edge ? 14 : 9) + r() * 12,
+        w2: 2.4 + r() * 3.0, p2: r() * 6.28, a2: 3 + r() * 4,
+      };
+    });
+    return { particles: ps, count: ps.length };
+  }
+
+  function runDissolve(onReveal) {
+    const { particles, count } = makeParticles();
+    info.textContent = `${count} 粒子 · 采样 ${''}`;
+    num.style.visibility = 'hidden';
+
+    const maxEnd = particles.reduce((m, p) => Math.max(m, p.delay + p.life), 0);
+    let revealed = false;
+    const t0 = performance.now();
+
+    const tick = (t) => {
+      const el = (t - t0) / 1000;
+      // 拖尾：半透明黑覆盖代替清空 → 粒子带丝滑余晖
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = 'rgba(0,0,0,0.26)';
+      ctx.fillRect(0, 0, innerWidth, innerHeight);
+
+      let alive = 0;
+      for (const p of particles) {
+        const a = el - p.delay;
+        if (a < 0) { alive++; continue; }
+        if (a > p.life) continue;
+        alive++;
+        const kk = a / p.life;                                // 0→1 生命进度
+        const tau = (1 - Math.exp(-p.k * a)) / p.k;           // 阻尼积分位移
+        const turb = Math.sin(a * p.w1 * 6.28 + p.p1) * p.a1 * a
+                   + Math.sin(a * p.w2 * 6.28 + p.p2) * p.a2 * a;
+        const x = p.x0 + p.vx * tau + turb;
+        const y = p.y0 + p.vy * tau * (1 - kk * 0.15);
+
+        const fadeIn = Math.min(1, a / 0.05);
+        const alpha = fadeIn * Math.pow(1 - kk, 1.6);
+        const s = p.cell * (1 - kk * 0.55);
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = p.c;
+        ctx.fillRect(x - s / 2, y - s / 2, s, s);
+      }
+      ctx.globalAlpha = 1;
+
+      if (!revealed && el > maxEnd * 0.62) { revealed = true; onReveal && onReveal(); }
+      if (alive > 0) { raf = requestAnimationFrame(tick); }
+      else { ctx.clearRect(0, 0, innerWidth, innerHeight); info.textContent = `${count} 粒子 · 完成`; }
+    };
+    raf = requestAnimationFrame(tick);
+  }
+
+  function play(onlyDust) {
+    cancelAnimationFrame(raf);
+    pre.classList.remove('gone');
+    num.style.visibility = 'visible';
+    num.style.animation = 'none';
+    num.style.transform = '';
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+
+    const finish = () => setTimeout(() => pre.classList.add('gone'), 120);
+
+    if (onlyDust) { runDissolve(finish); return; }
+
+    num.textContent = '0';
+    num.style.animation = 'fall 1.5s linear forwards';
+    const start = performance.now();
+    const step = (t) => {
+      const p = Math.min(1, (t - start) / 1500);
+      num.textContent = Math.round(p * 100);
+      if (p < 1) raf = requestAnimationFrame(step);
+      else runDissolve(finish);
+    };
+    raf = requestAnimationFrame(step);
+  }
+
+  document.getElementById('btn-full').onclick = () => play(false);
+  document.getElementById('btn-dust').onclick = () => play(true);
+  addEventListener('keydown', e => { if (e.code === 'Space') play(false); });
+
+  play(false);
+})();
+</script>
+</body>
+</html>

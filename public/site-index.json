@@ -1,0 +1,77 @@
+{
+  "name": "Quincy / 陈祺 — Portfolio",
+  "url": "https://www.cqsan.cn/",
+  "language": [
+    "zh-CN",
+    "en"
+  ],
+  "owner": {
+    "name": "陈祺",
+    "alternateName": "Quincy"
+  },
+  "projects": [
+    {
+      "title": "Agent Skills & Workflows",
+      "titleZh": "Agent Skills 与工作流",
+      "category": "AI · Skills · n8n",
+      "url": "https://www.cqsan.cn/#/work/agent-skills",
+      "description": "Agent architecture, 11 skills and n8n workflows for content and site operations."
+    },
+    {
+      "title": "Link Download",
+      "titleZh": "需求上线-链接下载",
+      "category": "Product",
+      "url": "https://www.cqsan.cn/#/work/link-download",
+      "description": "Research, PRD and launch follow-up for a same-page link parsing, preview and download flow."
+    },
+    {
+      "title": "TG Landing Redesign",
+      "titleZh": "原型设计-落地页",
+      "category": "Product",
+      "url": "https://tgvideodownloader.com/",
+      "description": "TG Landing Redesign"
+    },
+    {
+      "title": "BOSS Job Assistant MCP",
+      "titleZh": "BOSS 直聘投递助手 MCP",
+      "category": "Development · MCP",
+      "url": "https://www.cqsan.cn/#/work/boss-assistant",
+      "description": "A BOSS job assistant workflow covering role reading, evidence matching, authorised sending and delivery verification."
+    },
+    {
+      "title": "English / WPS PDF Guide",
+      "titleZh": "英文 / WPS PDF指南",
+      "category": "Content · EN",
+      "url": "https://www.wps.com/blog/what-is-an-affidavit-prepare-and-sign-the-pdf-in-wps/",
+      "description": "English / WPS PDF Guide"
+    },
+    {
+      "title": "English / Small Interface Choices",
+      "titleZh": "英文 / 界面细节与体验",
+      "category": "Content · EN",
+      "url": "https://www.fontmirror.com/en/why-small-interface-choices-matter-in-telegram-media-workflows/",
+      "description": "English / Small Interface Choices"
+    },
+    {
+      "title": "Spanish / Offline Access Matters",
+      "titleZh": "西语 / 离线访问的价值",
+      "category": "Content · ES",
+      "url": "https://tynmagazine.com/por-que-el-acceso-offline-sigue-importando-en-las-apps-de-mensajeria/",
+      "description": "Spanish / Offline Access Matters"
+    },
+    {
+      "title": "Chinese / Short-video Pipeline",
+      "titleZh": "中文 / Coze 短视频流水线",
+      "category": "Content · ZH",
+      "url": "https://mp.weixin.qq.com/s/l-Q0fXIh2362--ykXC3Zgw",
+      "description": "Chinese / Short-video Pipeline"
+    },
+    {
+      "title": "Chinese / AI Policy Teardown",
+      "titleZh": "中文 / AI 政策拆解指南",
+      "category": "Content · ZH",
+      "url": "https://mp.weixin.qq.com/s/Gjdv-KhOEx_sgvnQb0gMDg",
+      "description": "Chinese / AI Policy Teardown"
+    }
+  ]
+}

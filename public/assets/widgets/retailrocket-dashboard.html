@@ -1,0 +1,264 @@
+<!doctype html>
+<!-- RetailRocket charts adapted from Lieflat Charts: L13 Hourglass Stream,
+     F5 Tick Rows, F1 Rung Bars. mono-tokens.js is inlined from the installed skill. -->
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RetailRocket / Lieflat Charts</title>
+<link rel="license" href="inter-ofl.txt">
+<style>
+
+:root{--bg:#F0EFEB;--ink:#1C1C1A;--muted:#8F8E88;--faint:#C6C5BF;--grid:#DEDDD6}*{box-sizing:border-box;margin:0;padding:0}body{background:transparent;font-family:system-ui,-apple-system,'Microsoft YaHei',sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}.card{background:var(--bg);border-radius:24px;padding:28px 28px 20px}h2{font-weight:700;font-size:20px;letter-spacing:-.02em;margin-bottom:8px;line-height:1.35}.sub{font-size:13px;color:#6A6963;line-height:1.6;margin-bottom:12px}.src{font-size:11px;color:#6A6963;margin-top:18px;letter-spacing:.08em;line-height:1.5;font-weight:500}svg{width:100%;display:block;max-height:410px;overflow:visible}svg text{font-family:system-ui,sans-serif}button{font:inherit;cursor:pointer;color:var(--ink);-webkit-tap-highlight-color:transparent}.choices{display:grid;gap:7px;margin-top:18px}.choices button{display:flex;align-items:center;justify-content:space-between;gap:12px;border:0;background:#DEDDD6;border-radius:12px;padding:13px 15px;min-height:48px;text-align:left;font-size:14px;line-height:1.4}.choices button[aria-pressed=true]{background:#1C1C1A;color:#F0EFEB}.choices button strong{font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums}.choices button span:last-child{white-space:nowrap}.choices button:hover{outline:1px solid #6A6963}.insight{margin-top:21px;line-height:1.6;font-size:15px;min-height:82px}.insight strong{display:block;font-weight:700;font-size:17px;margin-bottom:8px}.window-metrics{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}.window-metrics strong{display:block;font-size:clamp(23px,5vw,33px);font-weight:800;letter-spacing:-.04em;margin-bottom:6px}.window-metrics span{font-size:13px;color:#6A6963;line-height:1.5}.window-metrics p{font-size:13px;margin-top:7px;line-height:1.5}.replay{border:0;background:transparent;color:#4A4944;font-size:13px;min-height:44px;padding:10px 0;display:block;margin-left:auto}button:focus-visible,svg:focus-visible{outline:2px solid #1C1C1A;outline-offset:3px}.fade{animation:fade .9s cubic-bezier(.25,1,.5,1) both}.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1s cubic-bezier(.25,1,.5,1) both}@keyframes fade{from{opacity:0}}@keyframes draw{to{stroke-dashoffset:0}}[data-active=false] .fade,[data-active=false] .draw{animation-play-state:paused}@media(max-width:420px){.card{padding:23px 17px 17px}.choices button{padding:12px 13px;font-size:14px;flex-wrap:wrap}.choices button>span:last-child{margin-left:auto}.sub{font-size:13px}h2{font-size:19px}.insight{min-height:125px}.window-metrics{gap:14px}.src{font-size:10px}}@media(prefers-reduced-motion:reduce){.fade,.draw{animation:none;stroke-dasharray:none;stroke-dashoffset:0}}
+
+.viz-layout{display:grid;gap:12px;align-items:center}.chart-controls{min-width:0}.choices{margin-top:0}.window-metrics{margin-top:16px;gap:12px}.window-metrics p{display:none}.card{padding:22px 22px 20px}svg{max-height:320px}.choices button{min-height:44px;padding:10px 12px;font-size:14px}.sub{margin-bottom:15px}@media(min-width:520px){.viz-layout{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:22px}svg{max-height:310px}.window-metrics{grid-template-columns:1fr}.window-metrics strong{font-size:25px}}@media(max-width:420px){.card{padding:20px 16px}svg{max-height:280px}.choices{gap:6px}.choices button{padding:10px 12px}.window-metrics strong{font-size:23px}}
+@media(min-width:520px){.viz-layout{grid-template-columns:minmax(0,1fr) minmax(210px,.9fr);gap:18px}.choices button{flex-wrap:wrap}.choices button span:last-child{margin-left:auto}}@media(max-width:519px){.viz-layout{gap:14px}.card{padding:18px 14px}svg{max-height:255px}.choices button{min-height:44px}.sub{line-height:1.6}}
+.card{position:relative;background:#f3efe3;border:1px solid #d7d0bd;border-radius:3px 3px 10px 2px;box-shadow:2px 3px 0 #e2dccb,0 4px 12px #56482b12;margin:2px 4px 5px 1px}.card:after{content:"";position:absolute;right:0;bottom:0;width:12px;height:12px;background:linear-gradient(135deg,transparent 49%,#fffdf5 50%,#ddd4bf);pointer-events:none}.choices button{border-radius:2px;box-shadow:1px 2px 0 #cec8b555;background:#e7e1d2}.choices button[aria-pressed=true]{background:#292c23;color:#fffdf3}</style><link rel="stylesheet" href="embed-theme.css?v=4"><link rel="stylesheet" href="replay-chrome.css?v=2"></head><body data-widget="dashboard"><main class="card" data-active="false"><nav id="view-tabs" class="replay-tabs" aria-label="Chart views"></nav><h2 id="heading"></h2><div class="sub" id="sub"></div><div class="viz-layout"><svg id="chart" viewBox="0 0 400 340" role="img"></svg><div class="chart-controls"><div class="choices" id="choices"></div><div id="metrics"></div></div></div></main><script>
+/* ═══════════════════════════════════════════════════════════════
+   MONO TOKENS — 风格的唯一正本
+   所有 mono 图表（Chart.js / ECharts / 手写 SVG）共享这一份。
+   任何文件里出现与本文件冲突的颜色、字体、动画参数，以本文件为准。
+   用法：<script src="mono-tokens.js"><\/script>，全部挂在 window.MONO 上；
+   也可以直接把本文件内容内联进单文件 HTML（开源分发时推荐内联）。
+   ═══════════════════════════════════════════════════════════════ */
+(function (global) {
+  'use strict';
+
+  /* ── 1 · 色板 ──────────────────────────────────────────────
+     纸灰底 + 炭黑墨。没有彩色。明度即数据：最重要 = 最黑。   */
+  const INK   = '#1C1C1A';   // 墨：主数据、标题、强调
+  const PAPER = '#F0EFEB';   // 纸：页面底色 = 浅卡底色（卡片无边框，靠留白分卡）
+  const MUTED = '#8F8E88';   // 次级文字、副标题
+  const FAINT = '#C6C5BF';   // 来源行、辅助刻度
+  const GRID  = '#DEDDD6';   // 网格线、发丝线
+
+  // 7 级灰阶 ladder：多系列时按重要性从黑到浅分配
+  const L   = ['#1C1C1A', '#4A4944', '#6A6963', '#8F8E88', '#B0AFA9', '#C6C5BF', '#D8D7D1'];
+  // 5 级简版（waffle 等少系列场景）
+  const LAD = ['#1C1C1A', '#4A4944', '#8F8E88', '#B0AFA9', '#D8D7D1'];
+
+  // 暗卡（dark card）专用：底 #1C1C1A，其上的"墨"反转为纸色
+  const DARK = {
+    bg: '#1C1C1A',
+    ink: '#F0EFEB',          // 暗卡上的主数据色
+    muted: '#8F8E88',
+    faint: '#55554F',        // 暗卡来源行
+    grid: '#2E2D29',         // 暗卡网格 / 发丝线
+    gridSoft: '#2A2925',
+    ladder: ['#F0EFEB', '#DCDAD2', '#C9C7BD', '#B3B0A4', '#8F8E88', '#6A6963', '#4A4944'],
+  };
+
+  /* ── 2 · 字体 ────────────────────────────────────────────── */
+  const FONT = {
+    family: 'Inter, system-ui, sans-serif',
+    // Google Fonts 引入行（放 <head>）：
+    link: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap',
+    title:    { size: 16.5, weight: 700, spacing: '-.02em' },  // 卡内 h2
+    titleBig: { size: 19,   weight: 700, spacing: '-.02em' },  // 独立大图 h2
+    sub:      { size: 11.5, weight: 400 },                     // 副标题（图例说明写在这里）
+    src:      { size: 9.5,  weight: 500, spacing: '.08em' },   // 来源行，全大写
+    value:    { weight: 800 },                                 // 图内数值一律 800
+    axis:     { size: 9.5,  weight: 600 },                     // 轴标签
+    // SVG 内最小字号下限：半宽卡 6.5px，通栏/大图 5.5px。低于下限改 hover 出。
+    minHalf: 6.5, minWide: 5.5,
+  };
+
+  /* ── 3 · 形状 ────────────────────────────────────────────── */
+  const SHAPE = {
+    cardRadius: 24,          // 卡片圆角
+    cardPad: '28px 28px 20px',
+    barRadius: 99,           // 柱端胶囊圆角（竖柱只圆上端，横柱只圆外端）
+    tooltipRadius: 12,
+  };
+
+  /* ── 4 · 动画性格 ────────────────────────────────────────
+     快进快停，quarticOut / cubicOut，不弹跳（elasticOut 只给波浪入场）。 */
+  const MOTION = {
+    enter: 900,              // 常规入场 ms
+    enterSlow: 1200,         // 大元素 / 关系图
+    easing: 'quarticOut',
+    staggerDot: 12,          // 点阵逐个延迟 ms（8–15 区间）
+    staggerBar: 100,         // 条形逐根延迟 ms（80–130 区间）
+    // CSS 动画类（手写 SVG 用）：pop 缩放入场 / fade 淡入 / draw 描线
+    css: `
+  .pop{transform-box:fill-box;transform-origin:center;animation:pop .5s cubic-bezier(.2,.7,.3,1.3) both}
+  @keyframes pop{from{transform:scale(0)}to{transform:none}}
+  .fade{animation:fade .9s ease both}
+  @keyframes fade{from{opacity:0}}
+  .draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1s cubic-bezier(.4,0,.2,1) both}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  @media (prefers-reduced-motion:reduce){
+    .pop,.fade{animation:none}
+    .draw{animation:none;stroke-dasharray:none;stroke-dashoffset:0}
+  }`,
+  };
+
+  /* ── 5 · Tooltip ─────────────────────────────────────────
+     浅卡用黑底纸字，暗卡用纸底黑字。ECharts 直接展开这两个对象。 */
+  const tipLight = { backgroundColor: INK, borderWidth: 0, padding: [10, 14],
+    textStyle: { color: PAPER, fontFamily: FONT.family, fontSize: 12 } };
+  const tipDark  = { backgroundColor: PAPER, borderWidth: 0, padding: [10, 14],
+    textStyle: { color: INK, fontFamily: FONT.family, fontSize: 12 } };
+
+  /* ── 6 · 确定性伪随机 ────────────────────────────────────
+     演示数据一律用它，不用 Math.random()——刷新必须长一样，
+     否则截图 / 录屏 / 回归对比全部失效。                       */
+  const rnd = (i, k) => Math.abs(((i * 73856093) ^ (k * 19349663)) % 1000) / 1000;
+
+  /* ── 7 · 几何 ────────────────────────────────────────────── */
+  const D2R = Math.PI / 180;
+  const pol = (cx, cy, r, deg) => [cx + r * Math.cos(deg * D2R), cy + r * Math.sin(deg * D2R)];
+  // 环形扇区 path（cornerRadius 自己在调用处用 ECharts sector 或手动倒角）
+  const sect = (cx, cy, r0, r1, a0, a1) => {
+    const big = a1 - a0 > 180 ? 1 : 0;
+    const [xa, ya] = pol(cx, cy, r1, a0), [xb, yb] = pol(cx, cy, r1, a1);
+    const [xc, yc] = pol(cx, cy, r0, a1), [xd, yd] = pol(cx, cy, r0, a0);
+    return `M${xa} ${ya} A${r1} ${r1} 0 ${big} 1 ${xb} ${yb} L${xc} ${yc} A${r0} ${r0} 0 ${big} 0 ${xd} ${yd} Z`;
+  };
+  // 手绘感圆（editorial 系气泡用）：圆周叠两个慢波 + 噪声，seed 定形
+  const blob = (x, y, r, seed) => {
+    const n = Math.max(14, Math.round(r * 1.6)), pts = [];
+    for (let t = 0; t < n; t++) {
+      const a = t / n * Math.PI * 2;
+      const w = 1 + .055 * Math.sin(a * 2 + seed * 7) + .04 * Math.sin(a * 3 + seed * 13)
+              + (rnd(seed + t, 3) - .5) * .03;
+      pts.push([x + Math.cos(a) * r * w, y + Math.sin(a) * r * w]);
+    }
+    let d = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
+    for (let t = 0; t < n; t++) {
+      const p = pts[t], q = pts[(t + 1) % n];
+      d += ` Q${p[0].toFixed(1)} ${p[1].toFixed(1)} ${((p[0]+q[0])/2).toFixed(1)} ${((p[1]+q[1])/2).toFixed(1)}`;
+    }
+    return d + ' Z';
+  };
+
+  /* ── 8 · SVG 快捷 ────────────────────────────────────────── */
+  const NS = 'http://www.w3.org/2000/svg';
+  const el  = (p, t, a) => { const n = document.createElementNS(NS, t);
+    for (const k in a) n.setAttribute(k, a[k]); p.appendChild(n); return n; };
+  const txt = (p, a, s) => { const n = el(p, 'text', a); n.textContent = s; return n; };
+  const tip = (n, s) => { const t = document.createElementNS(NS, 'title');
+    t.textContent = s; n.appendChild(t); };
+
+  /* ── 9 · 统一 reveal：滚入视野才播，点击重播 ──────────────
+     带 timer 登记（keep），重播前清干净，防动画叠加。          */
+  const timers = {};
+  const keep = (id, t) => { (timers[id] = timers[id] || []).push(t); };
+  const obsReveal = (id, fn) => {
+    const n = document.getElementById(id);
+    const go = () => {
+      (timers[id] || []).forEach(clearInterval); timers[id] = [];
+      if (n.tagName === 'svg' || n.tagName === 'SVG') n.innerHTML = '';
+      fn(n);
+    };
+    const io = new IntersectionObserver(es => {
+      if (es[0].isIntersecting) { go(); io.disconnect(); }
+    }, { threshold: .3 });
+    io.observe(n);
+    n.style.cursor = 'pointer';
+    n.addEventListener('click', go);
+  };
+  // ECharts 版 reveal
+  const eReveal = (id, opt) => obsReveal(id, elDom => {
+    const g = echarts.getInstanceByDom(elDom) || echarts.init(elDom);
+    g.clear(); g.setOption(opt);
+  });
+
+  /* ── 10 · 卡片骨架（生成新图时照抄这个结构） ──────────────
+     <div class="card [dark] [wide]">
+       <h2>结论式标题</h2>
+       <div class="sub">副标题 · 图例说明 · 时间范围</div>
+       <div class="ch" id="xx"></div>  或  <svg id="xx" viewBox="0 0 400 320">
+       <div class="src">图型名 · 系列名 · 数据来源（全大写）</div>
+     </div>                                                        */
+  const CARD_CSS = `
+  :root{--bg:${PAPER};--dark:${DARK.bg};--ink:${INK};--muted:${MUTED};--faint:${FAINT};--grid:${GRID}}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);font-family:sans-serif;color:var(--ink);padding:40px;-webkit-font-smoothing:antialiased}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:1400px;margin:0 auto}
+  .card{background:var(--bg);border-radius:${SHAPE.cardRadius}px;padding:${SHAPE.cardPad}}
+  .card.dark{background:var(--dark);color:${PAPER}}
+  .card.dark .sub{color:${MUTED}}
+  .card.dark .src{color:${DARK.faint}}
+  .card.wide{grid-column:1/-1}
+  h2{font-weight:${FONT.title.weight};font-size:${FONT.title.size}px;letter-spacing:${FONT.title.spacing};margin-bottom:3px}
+  .sub{font-size:${FONT.sub.size}px;color:var(--muted);margin-bottom:14px}
+  .src{font-size:${FONT.src.size}px;color:var(--faint);margin-top:10px;letter-spacing:${FONT.src.spacing};font-weight:${FONT.src.weight}}
+  .ch{height:320px}
+  svg text{font-family:sans-serif}` + MOTION.css;
+
+  global.MONO = { INK, PAPER, MUTED, FAINT, GRID, L, LAD, DARK,
+    FONT, SHAPE, MOTION, tipLight, tipDark,
+    rnd, pol, sect, blob, el, txt, tip, obsReveal, eReveal, keep, CARD_CSS };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+const DATA={"funnel":[{"stage_order":"1","funnel_stage":"View","visitor_count":"1404179","previous_stage_rate_pct":"100.0","total_conversion_rate_pct":"100.0"},{"stage_order":"2","funnel_stage":"Add to cart","visitor_count":"32934","previous_stage_rate_pct":"2.35","total_conversion_rate_pct":"2.35"},{"stage_order":"3","funnel_stage":"Transaction","visitor_count":"9952","previous_stage_rate_pct":"30.22","total_conversion_rate_pct":"0.71"}],"segments":[{"user_segment":"Shallow view only","user_count":"1173800","user_pct":"83.39"},{"user_segment":"Deep view only","user_count":"194915","user_pct":"13.85"},{"user_segment":"Cart without transaction","user_count":"27146","user_pct":"1.93"},{"user_segment":"Single transaction","user_count":"10656","user_pct":"0.76"},{"user_segment":"Repeat transaction","user_count":"1063","user_pct":"0.08"}],"timing":[{"window_name":"1 hour","first_cart_users":"37433","trigger_eligible_users":"28285","eligible_pct":"75.56","later_transaction_users":"852","natural_transaction_rate_24h":"3.01"},{"window_name":"6 hours","first_cart_users":"37433","trigger_eligible_users":"27725","eligible_pct":"74.07","later_transaction_users":"329","natural_transaction_rate_24h":"1.19"},{"window_name":"24 hours","first_cart_users":"37433","trigger_eligible_users":"27453","eligible_pct":"73.34","later_transaction_users":"112","natural_transaction_rate_24h":"0.41"}],"holdout":[{"user_segment":"Deep view only","users":"154484","future_cart_users":"214","future_cart_rate":"0.14","future_transaction_users":"70","future_transaction_rate":"0.05"},{"user_segment":"Shallow view only","users":"947847","future_cart_users":"367","future_cart_rate":"0.04","future_transaction_users":"141","future_transaction_rate":"0.01"}],"meta":{"users":1407580,"events":2756101,"items":235061,"start":"2015-05-03","end":"2015-09-18"}};
+let lang='zh',selected=0,active=false,ready=false,paintNow;
+let mode=location.hash?.slice(1)||new URLSearchParams(location.search).get('view')||'funnel';const root=document.querySelector('.card'),chart=document.getElementById('chart'),choices=document.getElementById('choices');
+if(mode==='segments')selected=2;
+const {INK,PAPER,MUTED,FAINT,GRID,L,rnd,el,txt,tip}=MONO;
+const t=(zh,en)=>lang==='en'?en:zh,n=v=>Number(v).toLocaleString('en-US');
+const names={funnel:[['浏览','View'],['随后加购','Then cart'],['随后购买','Then purchase']],segments:[['浅层浏览','Shallow browsing'],['深度浏览','Deep browsing'],['加购未买','Cart, no purchase'],['单次购买','One purchase'],['重复购买','Repeat purchase']]};
+const stageNotes=[['最大的流失点：浏览 → 加购','Main drop-off: view → cart','先检查商品价值、发现路径与加购入口。','Start with product value, discovery paths and the cart entry.'],['加购之后，30.22% 继续购买','After cart, 30.22% go on to purchase','为已有意向的用户补充商品信息，承接购买决策。','Help users with demonstrated intent complete their product decision.'],['9,952 位用户完成完整路径','9,952 users complete the full path','完成者中，54.16% 在 30 分钟内走完流程。','Among completers, 54.16% finished within 30 minutes.']];
+const cohortNotes=[['让第一次浏览，更容易留下来。','Make the first visit worth staying for.','浅层浏览占 83.39%。用清晰的商品价值与发现路径承接首次访问。','Shallow browsing accounts for 83.39%. Clear product value and discovery paths can support first visits.'],['深度浏览，是下一步运营的线索。','Deep browsing signals the next opportunity.','浏览 ≥3 次、商品 ≥2 件、活跃 ≥2 天，满足两项即归入深度浏览。时间留出验证中，未来加购率约为浅层的 3.58 倍。','At least two of: 3+ views, 2+ items, 2+ active days. In the time holdout, subsequent cart rate was about 3.58× that of shallow browsing.'],['27,146 位用户，优先召回。','27,146 users: prioritize recall.','已有加购意向却未购买，用轻提醒与商品信息承接，并控制触达次数。','They showed cart intent without purchasing. Use gentle reminders and product information, with a per-user message cap.'],['把一次购买，接成下一次。','Turn a first purchase into the next.','按已购商品与使用周期安排关联推荐和再次访问入口。','Use purchased items and usage cycles to guide recommendations and return visits.'],['观察重复购买的共同路径。','Study paths to repeat purchase.','从 1,063 位重复购买用户中寻找偏好的商品与访问节奏。','Explore preferred items and visit patterns among 1,063 repeat buyers.']];
+const timeNotes=[['1 小时 · 轻提醒','1 hour · Gentle reminder','提示加购商品仍在，保持简单直接。','Keep the first cart reminder simple and direct.'],['6 小时 · 补充决策信息','6 hours · Support the decision','补充规格、使用场景与商品信息，帮助完成比较。','Add specifications, use cases and product information to support comparison.'],['24 小时 · 最后一轮提醒','24 hours · Final reminder','控制单人触达次数，购买后停止提醒。','Cap messages per user and stop reminders after purchase.']];
+function set(id,value){document.getElementById(id).textContent=value}
+function configure(){
+ const views=[['funnel','转化情况','Funnel'],['segments','用户分布','Segments'],['timing','提醒时机','Timing']];
+ document.getElementById('view-tabs').innerHTML=views.map(v=>`<button type="button" role="tab" aria-selected="${mode===v[0]}" data-view="${v[0]}">${t(v[1],v[2])}</button>`).join('');
+
+ document.documentElement.lang=lang==='en'?'en':'zh-CN';document.getElementById('metrics').innerHTML='';let list,note;
+ if(mode==='funnel'){
+  set('heading',t('浏览到加购仅 2.35%','Only 2.35% move from view to cart'));
+  set('sub',t('同一用户依次浏览、加购、购买 · 条带宽度 = 人数 · 2015.05—09','The same user views, adds to cart, then buys · Strip width = users · May–Sep 2015'));
+  list=DATA.funnel.map((d,i)=>[t(...names.funnel[i]),n(d.visitor_count),d.total_conversion_rate_pct+'%']);note=stageNotes[selected];
+ }else if(mode==='segments'){
+  set('heading',t('先召回 27,146 位加购未买用户','Prioritize 27,146 cart non-buyers'));
+  set('sub',t('五层互斥人群 · 合计 1,407,580 人 · 每刻度约 1 万用户','Five mutually exclusive segments · 1,407,580 users total · One tick ≈ 10,000 users'));
+  list=DATA.segments.map((d,i)=>[t(...names.segments[i]),n(d.user_count),d.user_pct+'%']);note=cohortNotes[selected];
+ }else{
+  set('heading',t('较早窗口的自然购买率更高','Earlier windows retain more natural purchases'));
+  set('sub',t('首次加购后仍未购买的人群 · 随后 24h 自然购买率 · 每档 0.1 个百分点','Unpurchased after first cart · Natural purchase rate over the next 24h · One rung = 0.1 percentage point'));
+  list=DATA.timing.map((d,i)=>[[1,6,24][i]+' H',d.natural_transaction_rate_24h+'%',n(d.trigger_eligible_users)]);note=timeNotes[selected];
+  const d=DATA.timing[selected];document.getElementById('metrics').innerHTML='<div class="window-metrics"><div><strong>'+n(d.trigger_eligible_users)+'</strong><span>'+t('窗口开始时仍未购买','Unpurchased at window start')+'</span><p>'+t('覆盖首次加购用户','Share of first-cart users')+' '+d.eligible_pct+'%</p></div><div><strong>'+n(d.later_transaction_users)+'</strong><span>'+t('随后 24h 自然购买人数','Natural purchasers in the next 24h')+'</span><p>'+t('自然购买率','Natural purchase rate')+' '+d.natural_transaction_rate_24h+'%</p></div></div>';
+ }
+ choices.innerHTML=list.map((a,i)=>'<button data-index="'+i+'" aria-pressed="'+(selected===i)+'"><span>'+a[0]+'</span><span><strong>'+a[1]+'</strong> · '+a[2]+'</span></button>').join('');
+ if(mode==='timing')choices.querySelectorAll('button').forEach((b,i)=>{b.innerHTML='<span>'+[1,6,24][i]+' H</span><strong>'+DATA.timing[i].natural_transaction_rate_24h+'%</strong>'});
+
+ chart.setAttribute('aria-label',document.getElementById('heading').textContent+'; '+list.map(a=>a.join(' ')).join('; '));measure();
+}
+// L13 · Hourglass Stream — original barcode strips and falling hairline paths.
+function funnel(s){
+ const STAGE=DATA.funnel.map((d,i)=>[t(...names.funnel[i]),Number(d.visitor_count)]);
+ const CXm=153,sy=k=>55+k*126,w=c=>c/STAGE[0][1]*246;
+ STAGE.forEach(([name,c],k)=>{const parent=s;s=el(parent,'g',{'data-series':k});const y=sy(k),hw=w(c)/2,count=Math.max(1,Math.round(c/20000));
+  for(let j=0;j<count;j++){const x=CXm-hw+(j+.5)/count*hw*2;el(s,'line',{x1:x,y1:y-7,x2:x,y2:y+7,stroke:INK,'stroke-width':.8,opacity:.45+rnd(j+2,k+5)*.5,class:'fade',style:`animation-delay:${k*.12+j*.012}s`})}
+  if(k<STAGE.length-1){const hw1=w(STAGE[k+1][1])/2;for(let j=0;j<34;j++){const xt=CXm+(rnd(j+1,k*7+1)-.5)*2*hw*.94,xb=CXm+(rnd(j+3,k*7+5)-.5)*2*hw1*.94;el(s,'path',{d:`M${xt} ${y+8} C${xt} ${y+54} ${xb} ${sy(k+1)-54} ${xb} ${sy(k+1)-8}`,fill:'none',stroke:L[4],'stroke-width':.5,opacity:.32,pathLength:1,class:'draw',style:`animation-delay:${.2+k*.15+j*.008}s;animation-duration:.8s`})}txt(s,{x:22,y:(y+sy(k+1))/2+3,'font-size':17,'font-weight':800,fill:L[2],class:'fade',style:`animation-delay:${.5+k*.15}s`},Number(DATA.funnel[k+1].previous_stage_rate_pct).toFixed(2)+'%');txt(s,{x:22,y:(y+sy(k+1))/2+19,'font-size':11,'font-weight':600,fill:L[2]},t('上一步转化','FROM PREVIOUS'))}
+  el(s,'line',{x1:CXm+hw+6,y1:y,x2:286,y2:y,stroke:GRID,'stroke-width':.8,class:'fade',style:`animation-delay:${.3+k*.12}s`});txt(s,{x:294,y:y-4,'font-size':13,'font-weight':600,fill:L[1],class:'fade',style:`animation-delay:${.35+k*.12}s`},name);txt(s,{x:294,y:y+17,'font-size':17,'font-weight':800,fill:INK,class:'fade',style:`animation-delay:${.4+k*.12}s`},n(c));s=s.parentNode;
+ });
+}
+// F5 · Tick Rows — original queue of hairline ticks, guide floor, every-fifth dot.
+function segments(s){
+ const unit=10000,X0=20,PX=2.9,y0=i=>58+i*63,max=Number(DATA.segments[0].user_count)/unit;
+ DATA.segments.forEach((d,i)=>{const parent=s;s=el(parent,'g',{'data-series':i});const v=Number(d.user_count)/unit,y=y0(i),shade=i===2?INK:L[2];
+  txt(s,{x:X0,y:y-19,'font-size':14,'font-weight':600,fill:L[1],class:'fade',style:`animation-delay:${i*.1}s`},t(...names.segments[i]));txt(s,{x:380,y:y-19,'text-anchor':'end','font-size':14,'font-weight':800,fill:INK,class:'fade',style:`animation-delay:${i*.1}s`},n(d.user_count));el(s,'line',{x1:X0,y1:y+9,x2:X0+max*PX,y2:y+9,stroke:GRID,'stroke-width':.6,class:'fade',style:`animation-delay:${i*.1}s`});
+  for(let k=0;k<Math.ceil(v);k++){const fraction=Math.min(1,v-k),x=X0+(k+fraction/2)*PX,h=(9+rnd(k+1,i+2)*6)*fraction;el(s,'line',{x1:x,y1:y+9,x2:x,y2:y+9-h,stroke:shade,'stroke-width':.9,opacity:.55+rnd(k+3,i+5)*.45,class:'fade',style:`animation-delay:${i*.1+k*.012}s`});if(k%5===4)el(s,'circle',{cx:x,cy:y+13,r:.8,fill:FAINT,class:'fade',style:`animation-delay:${i*.1+k*.012}s`})}s=s.parentNode;
+ });
+}
+// F1 · Rung Bars — original vertical ladders, fractional final rung, shared zero.
+function timing(s){
+ const base=276,step=6.5,HW=22;
+ for(let tick=0;tick<=3;tick++){const y=base-tick*10*step;el(s,'line',{x1:30,y1:y,x2:372,y2:y,stroke:GRID,'stroke-width':.6,'stroke-dasharray':'2 5'});txt(s,{x:21,y:y+4,'font-size':11,'font-weight':600,fill:L[2],'text-anchor':'end'},tick+'%')}
+ DATA.timing.forEach((d,i)=>{const parent=s;s=el(parent,'g',{'data-series':i});const x=84+i*112,v=Number(d.natural_transaction_rate_24h)*10;
+  for(let k=0;k<Math.ceil(v);k++){const fraction=Math.min(1,v-k),y=base-(k+fraction)*step,width=(HW-1.5+rnd(k+1,i+2)*3)*fraction;el(s,'line',{x1:x-width,y1:y,x2:x+width,y2:y,stroke:INK,'stroke-width':1,opacity:.5+rnd(k+2,i+4)*.5,class:'fade',style:`animation-delay:${i*.1+k*.012}s`});if(k%5===4)el(s,'circle',{cx:x+HW+4.5,cy:y,r:.8,fill:FAINT,class:'fade',style:`animation-delay:${i*.1+k*.012}s`})}
+  txt(s,{x,y:base-v*step-15,'font-size':20,'font-weight':800,fill:INK,'text-anchor':'middle',class:'fade',style:`animation-delay:${.4+i*.1}s`},d.natural_transaction_rate_24h+'%');txt(s,{x,y:base+27,'font-size':14,'font-weight':600,fill:L[1],'text-anchor':'middle',class:'fade',style:`animation-delay:${i*.1}s`},[1,6,24][i]+' H');s=s.parentNode;
+ });el(s,'line',{x1:30,y1:base+4,x2:372,y2:base+4,stroke:GRID,'stroke-width':.8,class:'fade'});
+}
+function paint(s){s.innerHTML='';(mode==='segments'?segments:mode==='timing'?timing:funnel)(s);ready=true;measure()}
+// Retain the token's reveal + replay lifecycle, with a callable render for language changes.
+const entrance=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){paintNow=()=>paint(chart);paint(chart);entrance.disconnect()}},{threshold:.01});entrance.observe(chart);
+document.getElementById('view-tabs').addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(!b)return;mode=b.dataset.view;selected=mode==='segments'?2:0;configure();if(ready)paintNow();});
+choices.addEventListener('click',e=>{const button=e.target.closest('button[data-index]');if(!button)return;selected=Number(button.dataset.index);configure();const series=chart.querySelector('[data-series="'+selected+'"]');if(series){const replay=series.cloneNode(true);replay.dataset.replay=String(Number(series.dataset.replay||0)+1);for(const node of replay.querySelectorAll('.fade,.draw'))node.style.animationDelay=Math.max(0,(parseFloat(node.style.animationDelay)||0)-selected*.1)+'s';series.replaceWith(replay);}choices.querySelector('[data-index="'+selected+'"]').focus({preventScroll:true})});
+
+addEventListener('hashchange',()=>{const next=location.hash.slice(1);if(!['funnel','segments','timing'].includes(next)||next===mode)return;mode=next;selected=mode==='segments'?2:0;configure();if(ready)paintNow();});
+let lastHeight=0;function measure(){const height=Math.ceil(root.getBoundingClientRect().height)+2;if(height!==lastHeight){lastHeight=height;parent.postMessage({type:'portfolio-embed-height',kind:'retailrocket',height},location.origin)}}
+function visibility(){root.dataset.active=String(active&&!document.hidden)}
+addEventListener('message',e=>{if(e.source!==parent||e.origin!==location.origin)return;if(e.data?.type==='portfolio-language'){lang=e.data.lang==='en'?'en':'zh';configure();if(ready)paintNow()}if(e.data?.type==='retailrocket-view'){const next=e.data.mode;if(['funnel','segments','timing'].includes(next)&&next!==mode){mode=next;selected=mode==='segments'?2:0;configure();if(ready)paintNow()}}if(e.data?.type==='replay-visible'){active=!!e.data.active;visibility()}});document.addEventListener('visibilitychange',visibility);new ResizeObserver(measure).observe(root);configure();
+</script>
+</body></html>
